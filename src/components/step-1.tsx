@@ -19,11 +19,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { authenticateUser } from '@/api/users';
 import { useTranslation } from 'react-i18next';
+import { Loader2 } from 'lucide-react';
 
 type Step1Values = z.infer<typeof step1Schema>;
 
 export function Step1() {
   const { incrementCurrentStep, setUser, setPark } = useFormStepper();
+  const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
 
@@ -37,10 +39,10 @@ export function Step1() {
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
     try {
       const values = form.getValues();
       const result = await authenticateUser(values.ein, values.lastName);
-      console.log(result);
 
       if (result.error && result.message === 'Error authenticating user') {
         form.setError('ein', {
@@ -85,6 +87,8 @@ export function Step1() {
         message: t('invalidCredentials'),
       });
       console.error('Authentication failed:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -186,8 +190,8 @@ export function Step1() {
           )}
         />
         <div className='flex justify-end gap-2'>
-          <Button className='cursor-pointer' type='submit'>
-            {t('next')}
+          <Button className='cursor-pointer' type='submit' disabled={isLoading}>
+            {isLoading ? <Loader2 className='animate-spin' /> : t('next')}
           </Button>
         </div>
       </form>
