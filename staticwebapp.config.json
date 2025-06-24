@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "route": "/admin"
+    },
+    {
+      "route": "/confirmation"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": ["/static/media/*.{png,jpg,gif,svg}", "/static/css/*"]
+  },
+  "globalHeaders": {
+    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  }
+}
