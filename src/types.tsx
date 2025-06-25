@@ -4,6 +4,7 @@ export type User = {
   firstName?: string;
   ein: number;
   jobNumber?: string;
+  location?: string;
   email: string;
   children: number;
   guest: boolean;

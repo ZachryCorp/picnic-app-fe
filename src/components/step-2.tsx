@@ -46,7 +46,7 @@ export function Step2() {
     defaultValues: {
       name: `${user?.firstName} ${user?.lastName}`,
       jobNumber: user?.jobNumber,
-      location: user?.jobNumber, // TODO: add location to user table
+      location: user?.location,
       employeeTickets: 0,
       guestTickets: user?.guest ? 1 : 0,
       childrenTickets: user?.children,
@@ -127,7 +127,7 @@ export function Step2() {
                     readOnly
                     {...field}
                     placeholder={t('location')}
-                    value={user?.jobNumber ?? ''}
+                    value={user?.location ?? ''}
                   />
                 </FormControl>
                 <FormMessage />
