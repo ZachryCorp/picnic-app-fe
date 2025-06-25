@@ -12,7 +12,7 @@
     "exclude": ["/static/media/*.{png,jpg,gif,svg}", "/static/css/*"]
   },
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' data:"
+    "content-security-policy": "default-src 'self'; img-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' data: https://*.azurewebsites.net"
   },
   "mimeTypes": {
     ".json": "text/json"
