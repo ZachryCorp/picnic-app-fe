@@ -70,6 +70,7 @@ export function Step1() {
       }
 
       if (result) {
+        console.log('result', result);
         setUser({
           ...result,
         });

@@ -65,6 +65,7 @@ export const useFormStepper = create<FormStepper>()((set) => ({
     lastName: '',
     firstName: '',
     jobNumber: '',
+    location: '',
     email: '',
     children: 0,
     guest: false,
