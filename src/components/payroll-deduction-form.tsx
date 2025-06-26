@@ -25,8 +25,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function PayrollDeductionForm() {
   const { t } = useTranslation();
-  const { user, payrollDeductionAmount, incrementCurrentStep } =
-    useFormStepper();
+  const {
+    user,
+    payrollDeductionAmount,
+    incrementCurrentStep,
+    setPdfData,
+    setPdfFileName,
+    setPdfFileSize,
+  } = useFormStepper();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -126,6 +132,12 @@ export default function PayrollDeductionForm() {
       // 4. Generate PDF and create blob URL
       const pdfBytes = await pdfDoc.save();
       const { url, cleanup } = createPDFBlobUrl(pdfBytes);
+
+      // Store PDF data in Zustand state
+      const fileName = `payroll-deduction-${user?.ein || 'unknown'}-${Date.now()}.pdf`;
+      setPdfData(pdfBytes.buffer);
+      setPdfFileName(fileName);
+      setPdfFileSize(pdfBytes.length);
 
       setPdfUrl(url);
       setPdfCleanup(() => cleanup);

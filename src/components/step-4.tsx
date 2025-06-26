@@ -46,6 +46,10 @@ export function Step4() {
     park,
     deductionPeriods,
     additionalChildrenReason,
+    childrenVerification,
+    pdfData,
+    pdfFileName,
+    pdfFileSize,
   } = useFormStepper();
 
   const ticketPrice = getTicketPrice(park) ?? 0;
@@ -213,18 +217,24 @@ export function Step4() {
   });
 
   const onSubmit = (data: Step4Values) => {
-    const submission = create({
+    const submissionData = {
       userId: user.id,
       park,
       guest: user.guest,
       additionalFullTicket: fullTicketCount,
       additionalMealTicket: mealTicketCount,
-      childrenVerification: !!user.children,
+      childrenVerification,
       pendingDependentChildren: user.children,
       additionalChildrenReason,
       payrollDeduction: !!payrollDeductionAmount,
       deductionPeriods,
-    });
+      // Include PDF data if available
+      pdfData,
+      pdfFileName,
+      pdfFileSize,
+    };
+
+    const submission = create(submissionData);
 
     console.log('Submission', submission);
 
@@ -240,9 +250,16 @@ export function Step4() {
 
   return (
     <div className='flex flex-col gap-8 pb-4'>
-      <h2 className='text-2xl font-bold text-center'>
-        {t('section')} A - {t('fromZachryCorp')}
-      </h2>
+      <div className='flex flex-col gap-2'>
+        <h2 className='text-2xl font-bold text-center'>
+          {t('section')} A - {t('fromZachryCorp')}
+        </h2>
+        {childrenVerification && (
+          <p className='text-sm text-center text-destructive'>
+            {t('dependentChildrenVerification')}
+          </p>
+        )}
+      </div>
       <ProvidedTicketsTable
         guestTickets={totalGuestTickets}
         childrenTickets={totalChildrenTickets}

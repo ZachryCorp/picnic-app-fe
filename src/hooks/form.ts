@@ -34,6 +34,14 @@ interface FormStepper {
 
   deductionPeriods: number;
   setDeductionPeriods: (periods: number) => void;
+
+  // PDF storage
+  pdfData: ArrayBuffer | null;
+  setPdfData: (data: ArrayBuffer | null) => void;
+  pdfFileName: string;
+  setPdfFileName: (fileName: string) => void;
+  pdfFileSize: number;
+  setPdfFileSize: (size: number) => void;
 }
 
 export const useFormStepper = create<FormStepper>()((set) => ({
@@ -88,4 +96,12 @@ export const useFormStepper = create<FormStepper>()((set) => ({
 
   deductionPeriods: 0,
   setDeductionPeriods: (periods: number) => set({ deductionPeriods: periods }),
+
+  // PDF storage
+  pdfData: null,
+  setPdfData: (data: ArrayBuffer | null) => set({ pdfData: data }),
+  pdfFileName: '',
+  setPdfFileName: (fileName: string) => set({ pdfFileName: fileName }),
+  pdfFileSize: 0,
+  setPdfFileSize: (size: number) => set({ pdfFileSize: size }),
 }));

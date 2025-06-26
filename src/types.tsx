@@ -28,6 +28,10 @@ export type Submission = {
   ticketsToBeDistributed: number;
   ticketNumber: string;
   notes: string;
+  // PDF fields
+  pdfFile?: ArrayBuffer | null;
+  pdfFileName?: string | null;
+  pdfFileSize?: number | null;
   createdAt?: string;
   updatedAt?: string;
   userId: string;

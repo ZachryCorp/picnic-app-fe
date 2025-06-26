@@ -24,7 +24,9 @@ function RouteComponent() {
       </h3>
       <p className='text-sm'>{t('correctionsOrRevisions')}</p>
       {childrenVerification && (
-        <p className='text-sm'>{t('dependentChildrenVerification')}</p>
+        <p className='text-sm text-destructive'>
+          {t('dependentChildrenVerification')}
+        </p>
       )}
       <h2 className='text-2xl font-black text-destructive'>
         TODO: Add Hotel Information

@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import { SubmissionForm } from './form';
+import { PdfViewerModal } from './pdf-viewer-modal';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
@@ -52,7 +53,7 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Job#/Location/Plant' />
+      <DataTableColumnHeader column={column} title='Job No.' />
     ),
     id: 'jobNumber',
     accessorFn: (row) => row.user?.jobNumber,
@@ -63,6 +64,15 @@ export const columns: ColumnDef<Submission>[] = [
         value.length === 0 || (jobNumber ? value.includes(jobNumber) : false)
       );
     },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Department/Project/Plant/Hotel'
+      />
+    ),
+    accessorKey: 'user.location',
   },
   {
     header: 'Employee + Guest',
@@ -238,9 +248,17 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: 'childrenVerification',
   },
   {
+    header: 'PDF',
+    accessorKey: 'pdf',
+    cell: ({ row }) => {
+      return <PdfViewerModal submission={row.original} />;
+    },
+  },
+  {
     header: 'Edit',
     accessorKey: 'edit',
     cell: ({ row }) => {
+      console.log(row.original);
       const [open, setOpen] = useState(false);
       const closeModal = () => setOpen(false);
 
@@ -253,10 +271,9 @@ export const columns: ColumnDef<Submission>[] = [
               </Button>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {row.original.childrenVerification &&
-                    !row.original.childrenVerified && (
-                      <CircleAlert className='w-4 h-4 text-destructive' />
-                    )}
+                  {row.original.childrenVerification && (
+                    <CircleAlert className='w-4 h-4 text-destructive' />
+                  )}
                 </TooltipTrigger>
                 <TooltipContent>
                   Children Verification is required for this order

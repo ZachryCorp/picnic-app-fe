@@ -69,8 +69,12 @@ export function Step1() {
         return;
       }
 
+      if (result.submissions.length > 0) {
+        setAuthError(t('userAlreadySubmitted'));
+        return;
+      }
+
       if (result) {
-        console.log('result', result);
         setUser({
           ...result,
         });

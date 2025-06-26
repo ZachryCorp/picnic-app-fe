@@ -8,6 +8,15 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { Checkbox } from '../ui/checkbox';
 import { Textarea } from '../ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { useState } from 'react';
 
 export function SubmissionForm({
   submission,
@@ -16,6 +25,8 @@ export function SubmissionForm({
   submission: Submission;
   closeModal?: () => void;
 }) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const form = useForm<Submission>({
     defaultValues: submission ?? {
       park: '',
@@ -49,9 +60,11 @@ export function SubmissionForm({
       toast.success('Submission deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['submissions'] });
       if (closeModal) closeModal();
+      setShowDeleteDialog(false);
     },
     onError: () => {
       toast.error('Error deleting submission');
+      setShowDeleteDialog(false);
     },
   });
 
@@ -61,6 +74,10 @@ export function SubmissionForm({
 
   const handleDelete = () => {
     removeSubmission();
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
   };
 
   return (
@@ -108,7 +125,7 @@ export function SubmissionForm({
         />
         <FormField
           control={form.control}
-          name='childrenVerified'
+          name='childrenVerification'
           render={({ field }) => (
             <FormItem className='flex flex-row items-center gap-2'>
               <Checkbox
@@ -157,12 +174,39 @@ export function SubmissionForm({
             <Button type='submit'>Update</Button>
           </div>
           <div className='flex justify-end'>
-            <Button variant='destructive' type='button' onClick={handleDelete}>
+            <Button
+              variant='destructive'
+              type='button'
+              onClick={handleDeleteClick}
+            >
               Delete
             </Button>
           </div>
         </div>
       </form>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className='max-w-96 w-96'>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this submission? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={handleDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }
