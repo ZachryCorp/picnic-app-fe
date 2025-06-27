@@ -263,6 +263,9 @@ export default function PayrollDeductionForm() {
                   <Input
                     {...field}
                     placeholder={t('payPeriods')}
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                    }}
                     type='number'
                     min={1}
                     max={4}

@@ -10,7 +10,7 @@ import {
 import { Input } from './ui/input';
 import { loadPDFLib } from '@/lib/pdf-utils';
 
-import { sendEmail } from '@/api/email';
+import { sendOrderConfirmationEmail } from '@/api/email';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { step4Schema } from '@/schema';
@@ -73,9 +73,9 @@ export function Step4() {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([595.28, 841.89]); // A4 size
     const { width, height } = page.getSize();
-    const fontSize = 12;
-    const lineHeight = fontSize * 1.2;
-    let y = height - 50; // Start from top with margin
+    const fontSize = 11;
+    const lineHeight = fontSize * 1.3;
+    let y = height - 40; // Start from top with margin
 
     // Helper function to add text
     const addText = (text: string, x: number, y: number, options = {}) => {
@@ -94,65 +94,103 @@ export function Step4() {
       startY: number,
       rows: string[][],
       columnWidths: number[],
-      headerBgColor = rgb(0.9, 0.9, 0.9)
+      headerBgColor = rgb(0.9, 0.9, 0.9),
+      footerRows: number[] = []
     ) => {
-      const cellHeight = lineHeight * 1.5;
+      const cellHeight = lineHeight * 1.4;
       const tableWidth = columnWidths.reduce((a, b) => a + b, 0);
 
-      // Draw header background
-      page.drawRectangle({
-        x: startX,
-        y: startY - cellHeight,
-        width: tableWidth,
-        height: cellHeight,
-        color: headerBgColor,
-      });
-
-      // Draw cells
+      // Draw table background and borders
       let currentX = startX;
       rows.forEach((row, rowIndex) => {
+        const isHeader = rowIndex === 0;
+        const isFooter = footerRows.includes(rowIndex);
+        const bgColor = isHeader
+          ? headerBgColor
+          : isFooter
+            ? rgb(0.95, 0.95, 0.95)
+            : rgb(1, 1, 1);
+
+        // Draw row background
+        page.drawRectangle({
+          x: startX,
+          y: startY - (rowIndex + 1) * cellHeight,
+          width: tableWidth,
+          height: cellHeight,
+          color: bgColor,
+        });
+
+        // Draw cell borders and text
+        currentX = startX;
         row.forEach((cell, colIndex) => {
-          // Draw cell text
-          addText(cell, currentX + 5, startY - (rowIndex + 1) * cellHeight + 5);
+          // Draw cell border
+          page.drawRectangle({
+            x: currentX,
+            y: startY - (rowIndex + 1) * cellHeight,
+            width: columnWidths[colIndex],
+            height: cellHeight,
+            borderColor: rgb(0.7, 0.7, 0.7),
+            borderWidth: 0.5,
+          });
+
+          // Add cell text
+          const textY = startY - (rowIndex + 1) * cellHeight + cellHeight / 3;
+          const isRightAlign = colIndex === row.length - 1 && !isHeader;
+
+          // Better text positioning for right-aligned columns
+          let textX;
+          if (isRightAlign) {
+            // Calculate text width and position from right edge with more padding
+            const estimatedTextWidth = cell.length * (fontSize * 0.6); // Rough estimate
+            textX = currentX + columnWidths[colIndex] - estimatedTextWidth - 5;
+          } else {
+            textX = currentX + 8;
+          }
+
+          addText(cell, textX, textY, {
+            size: isHeader || isFooter ? fontSize : fontSize - 1,
+          });
+
           currentX += columnWidths[colIndex];
         });
-        currentX = startX;
       });
-
-      // Draw borders
-      currentX = startX;
-      for (let i = 0; i <= rows.length; i++) {
-        // Horizontal lines
-        page.drawLine({
-          start: { x: startX, y: startY - i * cellHeight },
-          end: { x: startX + tableWidth, y: startY - i * cellHeight },
-          color: rgb(0, 0, 0),
-          thickness: 0.5,
-        });
-      }
-      for (let i = 0; i <= columnWidths.length; i++) {
-        // Vertical lines
-        page.drawLine({
-          start: { x: currentX, y: startY },
-          end: { x: currentX, y: startY - rows.length * cellHeight },
-          color: rgb(0, 0, 0),
-          thickness: 0.5,
-        });
-        currentX += columnWidths[i];
-      }
 
       return rows.length * cellHeight;
     };
 
-    // Add title
-    addText('Order Summary', width / 2 - 50, y, { size: 20 });
-    y -= lineHeight * 3;
+    // Title and header
+    addText('Order Confirmation', width / 2 - 60, y, {
+      size: 20,
+      color: rgb(0.1, 0.1, 0.1),
+    });
+    y -= lineHeight * 2.5;
 
-    // Section A
-    addText('Section A - from Zachry Corporation', 50, y, { size: 16 });
+    // Employee information
+    addText(`Employee: ${user.firstName || ''} ${user.lastName}`, 50, y, {
+      size: 14,
+    });
+    y -= lineHeight;
+    addText(`Employee ID: ${user.ein}`, 50, y);
+    y -= lineHeight;
+    addText(`Park: ${park}`, 50, y);
     y -= lineHeight * 2;
 
-    // Section A Table
+    // Children verification warning
+    if (childrenVerification) {
+      addText('*** DEPENDENT CHILDREN VERIFICATION REQUIRED ***', 50, y, {
+        size: 12,
+        color: rgb(0.8, 0.2, 0.2),
+      });
+      y -= lineHeight * 2;
+    }
+
+    // Section A
+    addText('Section A - Provided by Zachry Corporation', 50, y, {
+      size: 16,
+      color: rgb(0.2, 0.4, 0.2),
+    });
+    y -= lineHeight * 1.5;
+
     const sectionATable = [
       ['Type of Ticket', 'Quantity'],
       ['Employee Tickets', '1'],
@@ -163,40 +201,107 @@ export function Step4() {
       50,
       y,
       sectionATable,
-      [300, 100],
-      rgb(0.8, 0.9, 0.8)
+      [320, 80],
+      rgb(0.8, 0.95, 0.8)
     );
     y -= sectionAHeight + lineHeight * 2;
 
     // Section B
-    addText('Section B - Employee Purchase', 50, y, { size: 16 });
-    y -= lineHeight * 2;
+    addText('Section B - Employee Purchase', 50, y, {
+      size: 16,
+      color: rgb(0.2, 0.4, 0.2),
+    });
+    y -= lineHeight * 1.5;
 
-    // Section B Table
     const sectionBTable = [
       ['Type of Ticket', 'Quantity', 'Price', 'Amount Due'],
       [
-        'Full Ticket (meal ticket included)',
+        'Full Ticket (park admission + meal ticket)',
         fullTicketCount.toString(),
-        `$${ticketPrice}`,
-        `$${fullTicketCount * ticketPrice}`,
+        `$${ticketPrice.toFixed(2)}`,
+        `$${(fullTicketCount * ticketPrice).toFixed(2)}`,
       ],
       [
         'Meal Ticket (for season pass holders)',
         mealTicketCount.toString(),
-        `$${mealTicketPrice}`,
-        `$${mealTicketCount * mealTicketPrice}`,
+        `$${mealTicketPrice.toFixed(2)}`,
+        `$${(mealTicketCount * mealTicketPrice).toFixed(2)}`,
       ],
-      ['Total Purchased by Employee', '', '', `$${payrollDeductionAmount}`],
+      [
+        'Total Purchased by Employee',
+        '',
+        '',
+        `$${payrollDeductionAmount.toFixed(2)}`,
+      ],
     ];
     const sectionBHeight = drawTable(
       50,
       y,
       sectionBTable,
-      [200, 80, 80, 100],
-      rgb(0.8, 0.9, 0.8)
+      [220, 60, 60, 100],
+      rgb(0.8, 0.95, 0.8),
+      [3] // Footer row
     );
     y -= sectionBHeight + lineHeight * 2;
+
+    // Section C
+    addText('Section C - Summary', 50, y, {
+      size: 16,
+      color: rgb(0.2, 0.4, 0.2),
+    });
+    y -= lineHeight * 1.5;
+
+    const totalTicketsZachry = 1 + totalGuestTickets + totalChildrenTickets;
+    const totalTicketsEmployee = fullTicketCount + mealTicketCount;
+    const totalTicketsOrdered = totalTicketsZachry + totalTicketsEmployee;
+
+    const sectionCTable = [
+      ['Description', 'Quantity'],
+      [
+        'Number of Tickets Purchased by Zachry (from Section A above)',
+        totalTicketsZachry.toString(),
+      ],
+      [
+        'Number of Tickets purchased by Employee (from Section B above)',
+        totalTicketsEmployee.toString(),
+      ],
+      ['Total Number of Tickets Ordered', totalTicketsOrdered.toString()],
+    ];
+    const sectionCHeight = drawTable(
+      50,
+      y,
+      sectionCTable,
+      [360, 80],
+      rgb(0.9, 0.9, 0.95),
+      [3] // Footer row
+    );
+    y -= sectionCHeight + lineHeight * 2;
+
+    // Payroll deduction info
+    if (payrollDeductionAmount > 0 && deductionPeriods > 0) {
+      addText('Payroll Deduction Information:', 50, y, { size: 14 });
+      y -= lineHeight;
+      addText(`Total Amount: $${payrollDeductionAmount.toFixed(2)}`, 50, y);
+      y -= lineHeight;
+      addText(`Deduction Periods: ${deductionPeriods} pay periods`, 50, y);
+      y -= lineHeight;
+      addText(
+        `Amount per Period: $${(payrollDeductionAmount / deductionPeriods).toFixed(2)}`,
+        50,
+        y
+      );
+    }
+
+    // Footer
+    const footerY = 50;
+    addText(`Generated on: ${new Date().toLocaleDateString()}`, 50, footerY, {
+      size: 10,
+      color: rgb(0.5, 0.5, 0.5),
+    });
+    addText('Zachry Corporation', width - 150, footerY, {
+      size: 10,
+      color: rgb(0.5, 0.5, 0.5),
+    });
 
     // Save the PDF
     const pdfBytes = await pdfDoc.save();
@@ -239,10 +344,34 @@ export function Step4() {
     console.log('Submission', submission);
 
     if (data.email && data.email.trim() !== '') {
-      sendEmail(
+      // Prepare order data for email template
+      const orderData = {
+        firstName: user.firstName || '',
+        lastName: user.lastName,
+        ein: user.ein,
+        park,
+        employeeTickets: 1,
+        guestTickets: totalGuestTickets,
+        childrenTickets: totalChildrenTickets,
+        additionalFullTickets: fullTicketCount,
+        additionalMealTickets: mealTicketCount,
+        totalTickets:
+          1 +
+          totalGuestTickets +
+          totalChildrenTickets +
+          fullTicketCount +
+          mealTicketCount,
+        payrollDeductionAmount,
+        deductionPeriods,
+        hasPayrollDeduction: !!payrollDeductionAmount,
+        childrenVerification,
+      };
+
+      sendOrderConfirmationEmail(
         data.email,
-        'Order Confirmation',
-        'Your order has been confirmed'
+        orderData,
+        pdfData || undefined,
+        pdfFileName || undefined
       );
     }
     navigate({ to: '/confirmation' });
