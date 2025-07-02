@@ -25,7 +25,6 @@ export function MultiStepForm() {
     {
       label: t('welcome'),
       component: <Step1 />,
-      description: t('welcomeDescription'),
     },
     {
       label: t('orderDetails'),
