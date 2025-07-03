@@ -46,9 +46,9 @@ export function Step2() {
     defaultValues: {
       name: `${user?.firstName} ${user?.lastName}`,
       jobNumber: user?.jobNumber,
-      location: user?.jobNumber, // TODO: add location to user table
+      location: user?.location,
       employeeTickets: 0,
-      guestTickets: user?.guest ? 1 : 0,
+      guestTickets: undefined,
       childrenTickets: user?.children,
       additionalChildrenReason: '',
     },
@@ -57,7 +57,7 @@ export function Step2() {
   const handleSubmit = () => {
     setUser({
       ...user,
-      guest: form.getValues('guestTickets') > 0,
+      guest: form.getValues('guestTickets') ? true : false,
       children: form.getValues('childrenTickets'),
     });
     setIncludePayrollDeduction(false);
@@ -68,7 +68,7 @@ export function Step2() {
   const handlePurchaseTickets = () => {
     setUser({
       ...user,
-      guest: form.getValues('guestTickets') > 0,
+      guest: form.getValues('guestTickets') ? true : false,
       children: form.getValues('childrenTickets'),
     });
     setIncludePayrollDeduction(true);
@@ -121,13 +121,13 @@ export function Step2() {
             name='location'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('location')}</FormLabel>
+                <FormLabel>{t('department')}</FormLabel>
                 <FormControl>
                   <Input
                     readOnly
                     {...field}
-                    placeholder={t('location')}
-                    value={user?.jobNumber ?? ''}
+                    placeholder={t('department')}
+                    value={user?.location ?? ''}
                   />
                 </FormControl>
                 <FormMessage />
@@ -187,8 +187,9 @@ export function Step2() {
                   <div className='flex items-end flex-col gap-2'>
                     <FormControl>
                       <Input
-                        className='w-16'
                         {...field}
+                        value={field.value ?? ''}
+                        className='w-16'
                         type='number'
                         min={0}
                         max={1}
@@ -219,6 +220,7 @@ export function Step2() {
                     <Button
                       onClick={() => {
                         setShowChildrenVerification(false);
+                        setChildrenVerification(false);
                       }}
                       variant='ghost'
                       size='sm'
@@ -291,6 +293,9 @@ export function Step2() {
                       <Textarea
                         {...field}
                         placeholder='Reason for additional children'
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                        }}
                       />
                     </FormItem>
                   )}
