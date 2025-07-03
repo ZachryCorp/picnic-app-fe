@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { createSubmission } from '@/api/submissions';
 import { getMealTicketPrice, getTicketPrice } from '@/lib/utils';
+import { ArrowLeftIcon } from 'lucide-react';
 
 type Step4Values = z.infer<typeof step4Schema>;
 
@@ -50,6 +51,7 @@ export function Step4() {
     pdfData,
     pdfFileName,
     pdfFileSize,
+    decrementCurrentStep,
   } = useFormStepper();
 
   const ticketPrice = getTicketPrice(park) ?? 0;
@@ -494,11 +496,23 @@ export function Step4() {
               </FormItem>
             )}
           />
-          <div className='flex justify-end gap-2'>
-            <Button type='button' variant='outline' onClick={handlePrint}>
-              {t('print')}
+          <div className='flex justify-between gap-2'>
+            <Button
+              variant='ghost'
+              type='button'
+              onClick={() => {
+                decrementCurrentStep();
+              }}
+            >
+              <ArrowLeftIcon className='w-4 h-4' />
+              {t('back')}
             </Button>
-            <Button type='submit'>{t('submit')}</Button>
+            <div className='flex gap-2'>
+              <Button type='button' variant='outline' onClick={handlePrint}>
+                {t('print')}
+              </Button>
+              <Button type='submit'>{t('submit')}</Button>
+            </div>
           </div>
         </form>
       </Form>

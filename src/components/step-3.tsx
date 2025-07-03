@@ -20,6 +20,7 @@ import { step3Schema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { getMealTicketPrice, getTicketPrice } from '@/lib/utils';
+import { ArrowLeftIcon } from 'lucide-react';
 
 type Step3Values = z.infer<typeof step3Schema>;
 
@@ -27,6 +28,7 @@ export function Step3() {
   const { t } = useTranslation();
 
   const {
+    decrementCurrentStep,
     incrementCurrentStep,
     setPayrollDeductionAmount,
     fullTicketCount,
@@ -162,7 +164,17 @@ export function Step3() {
               </TableRow>
             </TableFooter>
           </Table>
-          <div className='flex justify-end gap-2'>
+          <div className='flex justify-between gap-2'>
+            <Button
+              variant='ghost'
+              type='button'
+              onClick={() => {
+                decrementCurrentStep();
+              }}
+            >
+              <ArrowLeftIcon className='w-4 h-4' />
+              {t('back')}
+            </Button>
             <Button className='cursor-pointer' type='submit'>
               {t('next')}
             </Button>
