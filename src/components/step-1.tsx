@@ -176,6 +176,9 @@ export function Step1() {
                         />
                       </AspectRatio>
                       <FormLabel>Fiesta Texas</FormLabel>
+                      <p className='text-sm text-muted-foreground'>
+                        San Antonio, TX
+                      </p>
                       <FormControl>
                         <RadioGroupItem value='Fiesta Texas' />
                       </FormControl>
@@ -189,6 +192,9 @@ export function Step1() {
                         />
                       </AspectRatio>
                       <FormLabel>Six Flags Over Texas</FormLabel>
+                      <p className='text-sm text-muted-foreground'>
+                        Arlington, TX
+                      </p>
                       <FormControl>
                         <RadioGroupItem value='Six Flags Over Texas' />
                       </FormControl>
@@ -202,6 +208,9 @@ export function Step1() {
                         />
                       </AspectRatio>
                       <FormLabel>Carowinds</FormLabel>
+                      <p className='text-sm text-muted-foreground'>
+                        Charlotte, NC
+                      </p>
                       <FormControl>
                         <RadioGroupItem value='Carowinds' />
                       </FormControl>
