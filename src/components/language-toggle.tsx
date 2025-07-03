@@ -16,7 +16,7 @@ export function LanguageToggle() {
           checked={i18n.language === 'es'}
           onCheckedChange={handleLanguageChange}
         />
-        <Label>Español</Label>
+        <Label className='text-lg'>Español</Label>
       </div>
     </>
   );
