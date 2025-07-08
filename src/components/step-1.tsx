@@ -171,38 +171,6 @@ export function Step1() {
                       <AspectRatio ratio={16 / 9}>
                         <img
                           className='object-cover'
-                          src='/img/fiesta-texas.webp'
-                          alt='Fiesta Texas'
-                        />
-                      </AspectRatio>
-                      <FormLabel>Fiesta Texas</FormLabel>
-                      <p className='text-sm text-muted-foreground'>
-                        San Antonio, TX
-                      </p>
-                      <FormControl>
-                        <RadioGroupItem value='Fiesta Texas' />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem className='flex flex-col items-center gap-2'>
-                      <AspectRatio ratio={16 / 9}>
-                        <img
-                          className='object-cover'
-                          src='/img/six-flags.webp'
-                          alt='Six Flags Over Texas'
-                        />
-                      </AspectRatio>
-                      <FormLabel>Six Flags Over Texas</FormLabel>
-                      <p className='text-sm text-muted-foreground'>
-                        Arlington, TX
-                      </p>
-                      <FormControl>
-                        <RadioGroupItem value='Six Flags Over Texas' />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem className='flex flex-col items-center gap-2'>
-                      <AspectRatio ratio={16 / 9}>
-                        <img
-                          className='object-cover'
                           src='/img/carowinds.webp'
                           alt='Carowinds'
                         />
@@ -211,8 +179,49 @@ export function Step1() {
                       <p className='text-sm text-muted-foreground'>
                         Charlotte, NC
                       </p>
+                      <p className='text-sm text-muted-foreground'>
+                        {t('carowindsDate')}
+                      </p>
                       <FormControl>
                         <RadioGroupItem value='Carowinds' />
+                      </FormControl>
+                    </FormItem>
+                    <FormItem className='flex flex-col items-center gap-2'>
+                      <AspectRatio ratio={16 / 9}>
+                        <img
+                          className='object-cover'
+                          src='/img/fiesta-texas.webp'
+                          alt='Fiesta Texas'
+                        />
+                      </AspectRatio>
+                      <FormLabel>Fiesta Texas</FormLabel>
+                      <p className='text-sm text-muted-foreground'>
+                        San Antonio, TX
+                      </p>
+                      <p className='text-sm text-muted-foreground'>
+                        {t('fiestaTexasDate')}
+                      </p>
+                      <FormControl>
+                        <RadioGroupItem value='Fiesta Texas' />
+                      </FormControl>
+                    </FormItem>
+                    <FormItem className='flex flex-col items-center gap-2'>
+                      <AspectRatio ratio={16 / 9}>
+                        <img
+                          src='/img/six-flags.webp'
+                          alt='Six Flags Over Texas'
+                          className='object-cover'
+                        />
+                      </AspectRatio>
+                      <FormLabel>Six Flags Over Texas</FormLabel>
+                      <p className='text-sm text-muted-foreground'>
+                        Arlington, TX
+                      </p>
+                      <p className='text-sm text-muted-foreground'>
+                        {t('sixFlagsDate')}
+                      </p>
+                      <FormControl>
+                        <RadioGroupItem value='Six Flags Over Texas' />
                       </FormControl>
                     </FormItem>
                   </RadioGroup>
