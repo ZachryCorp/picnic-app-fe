@@ -70,7 +70,7 @@ export function Step2() {
     setIncludePayrollDeduction(false);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
     setChildrenVerification(
-      initialChildrenVerificationRequired && childrenTickets > 0
+      initialChildrenVerificationRequired && childrenTickets > user?.childrenß
     );
     incrementCurrentStep();
   };
@@ -84,7 +84,7 @@ export function Step2() {
     setIncludePayrollDeduction(true);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
     setChildrenVerification(
-      initialChildrenVerificationRequired && childrenTickets > 0
+      initialChildrenVerificationRequired && childrenTickets > user?.children
     );
     incrementCurrentStep();
   };
@@ -296,24 +296,25 @@ export function Step2() {
                   </FormItem>
                 )}
               />
-              {showAdditionalChildrenTextArea && childrenTickets > 0 && (
-                <FormField
-                  control={form.control}
-                  name='additionalChildrenReason'
-                  render={({ field }) => (
-                    <FormItem className='mt-4'>
-                      <FormLabel>Additional Children Reason</FormLabel>
-                      <Textarea
-                        {...field}
-                        placeholder='Reason for additional children'
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                        }}
-                      />
-                    </FormItem>
-                  )}
-                />
-              )}
+              {showAdditionalChildrenTextArea &&
+                childrenTickets > user?.children && (
+                  <FormField
+                    control={form.control}
+                    name='additionalChildrenReason'
+                    render={({ field }) => (
+                      <FormItem className='mt-4'>
+                        <FormLabel>Additional Children Reason</FormLabel>
+                        <Textarea
+                          {...field}
+                          placeholder='Reason for additional children'
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                          }}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                )}
             </div>
           </div>
         </form>
