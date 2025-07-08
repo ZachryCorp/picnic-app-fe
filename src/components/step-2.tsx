@@ -307,9 +307,7 @@ export function Step2() {
       </Form>
       {!showChildrenVerification && (
         <div className='flex justify-between'>
-          <p className='text-sm text-muted-foreground'>
-            {t('additionalTicketsPrompt')}
-          </p>
+          <p className='font-bold'>{t('additionalTicketsPrompt')}</p>
           <div className='flex gap-2'>
             <Button
               onClick={form.handleSubmit(handlePurchaseTickets)}
