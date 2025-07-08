@@ -78,5 +78,6 @@
   "orderConfirmationDescription": "Entradas de papel y Programación de eventos serán enviadas a su ubicación de trabajo.",
   "correctionsOrRevisions": "Por favor, envíe un correo a familypicnicinbox@zachrycorp.com para correcciones o revisiones",
   "dependentChildrenVerification": "La verificación de hijos dependientes es requerida para esta orden",
-  "userAlreadySubmitted": "El usuario ya ha enviado una orden, por favor contacte a su supervisor para obtener asistencia."
+  "userAlreadySubmitted": "El usuario ya ha enviado una orden, por favor contacte a su supervisor para obtener asistencia.",
+  "parkInformation": "Entradas de papel y Programación de eventos serán enviadas a su ubicación de trabajo"
 }

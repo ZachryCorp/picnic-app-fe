@@ -19,9 +19,7 @@ function RouteComponent() {
       <h1 className='text-2xl font-bold text-center'>
         {t('thankYouForCompletingTheZachryPicnicForm')}
       </h1>
-      <h3 className='text-lg text-muted-foreground'>
-        {t('orderConfirmationDescription')}
-      </h3>
+
       <p className='text-sm'>{t('correctionsOrRevisions')}</p>
       {childrenVerification && (
         <p className='text-sm text-destructive'>
@@ -31,6 +29,9 @@ function RouteComponent() {
       <h2 className='text-2xl font-black text-destructive'>
         TODO: Add Hotel Information
       </h2>
+      <h3 className='text-lg text-muted-foreground'>
+        {t('orderConfirmationDescription')}
+      </h3>
     </div>
   );
 }

@@ -161,7 +161,7 @@ export function Step4() {
     };
 
     // Title and header
-    addText('Order Confirmation', width / 2 - 60, y, {
+    addText(t('orderSummary'), width / 2 - 60, y, {
       size: 20,
       color: rgb(0.1, 0.1, 0.1),
     });
@@ -174,7 +174,13 @@ export function Step4() {
     y -= lineHeight;
     addText(`Employee ID: ${user.ein}`, 50, y);
     y -= lineHeight;
-    addText(`Park: ${park}`, 50, y);
+    addText(`${t('park')}: ${park}`, 50, y);
+    y -= lineHeight * 2;
+
+    // Park Information
+    addText(t('parkInformation'), 50, y, {
+      size: 10,
+    });
     y -= lineHeight * 2;
 
     // Children verification warning
@@ -187,17 +193,17 @@ export function Step4() {
     }
 
     // Section A
-    addText('Section A - Provided by Zachry Corporation', 50, y, {
+    addText(`${t('section')} A - ${t('fromZachryCorp')}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
     y -= lineHeight * 1.5;
 
     const sectionATable = [
-      ['Type of Ticket', 'Quantity'],
-      ['Employee Tickets', '1'],
-      ['Guest Tickets', totalGuestTickets.toString()],
-      ['Children Tickets', totalChildrenTickets.toString()],
+      [t('typeOfTicket'), t('quantity')],
+      [t('employeeTickets'), '1'],
+      [t('guestTickets'), totalGuestTickets.toString()],
+      [t('childrenTickets'), totalChildrenTickets.toString()],
     ];
     const sectionAHeight = drawTable(
       50,
@@ -209,28 +215,28 @@ export function Step4() {
     y -= sectionAHeight + lineHeight * 2;
 
     // Section B
-    addText('Section B - Employee Purchase', 50, y, {
+    addText(`${t('section')} B - ${t('employeePurchase')}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
     y -= lineHeight * 1.5;
 
     const sectionBTable = [
-      ['Type of Ticket', 'Quantity', 'Price', 'Amount Due'],
+      [t('typeOfTicket'), t('quantity'), t('price'), t('amountDue')],
       [
-        'Full Ticket (park admission + meal ticket)',
+        t('fullTicket'),
         fullTicketCount.toString(),
         `$${ticketPrice.toFixed(2)}`,
         `$${(fullTicketCount * ticketPrice).toFixed(2)}`,
       ],
       [
-        'Meal Ticket (for season pass holders)',
+        t('mealTicket'),
         mealTicketCount.toString(),
         `$${mealTicketPrice.toFixed(2)}`,
         `$${(mealTicketCount * mealTicketPrice).toFixed(2)}`,
       ],
       [
-        'Total Purchased by Employee',
+        t('totalPurchasedByEmployee'),
         '',
         '',
         `$${payrollDeductionAmount.toFixed(2)}`,
@@ -247,7 +253,7 @@ export function Step4() {
     y -= sectionBHeight + lineHeight * 2;
 
     // Section C
-    addText('Section C - Summary', 50, y, {
+    addText(`${t('section')} C - ${t('summary')}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
@@ -258,16 +264,13 @@ export function Step4() {
     const totalTicketsOrdered = totalTicketsZachry + totalTicketsEmployee;
 
     const sectionCTable = [
-      ['Description', 'Quantity'],
+      [t('description'), t('quantity')],
+      [t('numberOfTicketsPurchasedByZachry'), totalTicketsZachry.toString()],
       [
-        'Number of Tickets Purchased by Zachry (from Section A above)',
-        totalTicketsZachry.toString(),
-      ],
-      [
-        'Number of Tickets purchased by Employee (from Section B above)',
+        t('numberOfTicketsPurchasedByEmployee'),
         totalTicketsEmployee.toString(),
       ],
-      ['Total Number of Tickets Ordered', totalTicketsOrdered.toString()],
+      [t('totalNumberOfTicketsOrdered'), totalTicketsOrdered.toString()],
     ];
     const sectionCHeight = drawTable(
       50,

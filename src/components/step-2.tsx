@@ -134,7 +134,7 @@ export function Step2() {
               </FormItem>
             )}
           />
-          <div className='flex flex-col gap-1 max-w-96'>
+          <div className='flex flex-col gap-1'>
             <h2 className='text-xl font-semibold'>
               {t('ticketsProvidedByZachryCorp')}
             </h2>
