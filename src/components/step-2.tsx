@@ -40,6 +40,10 @@ export function Step2() {
     useState(false);
   const [showAdditionalChildrenTextArea, setShowAdditionalChildrenTextArea] =
     useState(false);
+  const [
+    initialChildrenVerificationRequired,
+    setInitialChildrenVerificationRequired,
+  ] = useState(false);
 
   const form = useForm<Step2Values>({
     resolver: zodResolver(step2Schema),
@@ -54,6 +58,9 @@ export function Step2() {
     },
   });
 
+  // watch for changes to childrenTickets
+  const childrenTickets = form.watch('childrenTickets');
+
   const handleSubmit = () => {
     setUser({
       ...user,
@@ -62,6 +69,9 @@ export function Step2() {
     });
     setIncludePayrollDeduction(false);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
+    setChildrenVerification(
+      initialChildrenVerificationRequired && childrenTickets > 0
+    );
     incrementCurrentStep();
   };
 
@@ -73,6 +83,9 @@ export function Step2() {
     });
     setIncludePayrollDeduction(true);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
+    setChildrenVerification(
+      initialChildrenVerificationRequired && childrenTickets > 0
+    );
     incrementCurrentStep();
   };
 
@@ -220,7 +233,7 @@ export function Step2() {
                     <Button
                       onClick={() => {
                         setShowChildrenVerification(false);
-                        setChildrenVerification(false);
+                        setInitialChildrenVerificationRequired(false);
                       }}
                       variant='ghost'
                       size='sm'
@@ -232,7 +245,7 @@ export function Step2() {
                         setShowChildrenVerification(false);
                         setShowAdditionalChildInput(true);
                         setShowAdditionalChildrenTextArea(true);
-                        setChildrenVerification(true);
+                        setInitialChildrenVerificationRequired(true);
                       }}
                       variant='ghost'
                       size='sm'
@@ -283,7 +296,7 @@ export function Step2() {
                   </FormItem>
                 )}
               />
-              {showAdditionalChildrenTextArea && (
+              {showAdditionalChildrenTextArea && childrenTickets > 0 && (
                 <FormField
                   control={form.control}
                   name='additionalChildrenReason'

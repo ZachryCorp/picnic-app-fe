@@ -34,7 +34,7 @@ export function Step1() {
     defaultValues: {
       lastName: '',
       ein: '',
-      park: 'Fiesta Texas',
+      park: undefined,
     },
   });
 
