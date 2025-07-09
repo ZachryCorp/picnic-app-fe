@@ -70,7 +70,7 @@ export function Step2() {
     setIncludePayrollDeduction(false);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
     setChildrenVerification(
-      initialChildrenVerificationRequired && childrenTickets > user?.childrenß
+      initialChildrenVerificationRequired && childrenTickets > user?.children
     );
     incrementCurrentStep();
   };
