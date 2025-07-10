@@ -87,10 +87,13 @@ export function DataTable<TData extends Submission, TValue>({
   });
 
   const exportExcel = (rows: Row<Submission>[]) => {
-    const rowData = rows.map((row) => ({
-      ...row.original,
-      user: row.original.user?.ein || '',
-    }));
+    const rowData = rows.map((row) => {
+      const { pdfFile, pdfFileName, pdfFileSize, ...exportData } = row.original;
+      return {
+        ...exportData,
+        user: row.original.user?.ein || '',
+      };
+    });
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
