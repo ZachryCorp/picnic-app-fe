@@ -27,6 +27,7 @@
   "no": "No",
   "next": "Next",
   "back": "Back",
+  "backToHome": "Back to Home",
   "userNotFound": "User not found",
   "invalidCredentials": "Invalid credentials",
   "authenticationFailed": "Authentication failed",
