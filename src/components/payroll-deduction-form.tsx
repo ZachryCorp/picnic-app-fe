@@ -85,6 +85,10 @@ export default function PayrollDeductionForm() {
       if (pdfCleanup) {
         pdfCleanup();
       }
+      // Reset PDF data if user goes back to step 3
+      setPdfData(null);
+      setPdfFileName('');
+      setPdfFileSize(0);
     };
   }, [pdfCleanup]);
 

@@ -31,6 +31,7 @@ export function Step3() {
     decrementCurrentStep,
     incrementCurrentStep,
     setPayrollDeductionAmount,
+    setIncludePayrollDeduction,
     fullTicketCount,
     mealTicketCount,
     setFullTicketCount,
@@ -63,6 +64,11 @@ export function Step3() {
       data.fullTicketQuantity * ticketPrice +
         data.mealTicketQuantity * mealTicketPrice
     );
+
+    if (data.fullTicketQuantity === 0 && data.mealTicketQuantity === 0) {
+      setIncludePayrollDeduction(false);
+      return;
+    }
     incrementCurrentStep();
   };
 
