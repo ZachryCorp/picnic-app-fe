@@ -42,3 +42,19 @@ export const sendOrderConfirmationEmail = async (
   });
   return response.json();
 };
+
+export const sendDependentChildrenVerificationEmail = async (
+  orderData: any
+) => {
+  const response = await fetch(
+    `${baseUrl}/email/dependent-children-verification`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ orderData }),
+    }
+  );
+  return response.json();
+};

@@ -10,7 +10,10 @@ import {
 import { Input } from './ui/input';
 import { loadPDFLib } from '@/lib/pdf-utils';
 
-import { sendOrderConfirmationEmail } from '@/api/email';
+import {
+  sendDependentChildrenVerificationEmail,
+  sendOrderConfirmationEmail,
+} from '@/api/email';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { step4Schema } from '@/schema';
@@ -344,9 +347,7 @@ export function Step4() {
       pdfFileSize,
     };
 
-    const submission = create(submissionData);
-
-    console.log('Submission', submission);
+    create(submissionData);
 
     if (data.email && data.email.trim() !== '') {
       // Prepare order data for email template
@@ -371,6 +372,10 @@ export function Step4() {
         hasPayrollDeduction: !!payrollDeductionAmount,
         childrenVerification,
       };
+
+      if (childrenVerification) {
+        sendDependentChildrenVerificationEmail(orderData);
+      }
 
       sendOrderConfirmationEmail(
         data.email,

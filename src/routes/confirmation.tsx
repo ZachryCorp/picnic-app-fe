@@ -20,7 +20,7 @@ function RouteComponent() {
   return (
     // Header with logo and back button
     <>
-      <div className='flex items-center justify-between w-full p-3 sm:px-4 sm:py-4'>
+      <div className='flex items-center justify-between w-full p-3 sm:px-4 sm:py-6'>
         <Link to='/' className='flex items-center gap-2'>
           <ArrowLeftIcon className='w-4 h-4' />
           {t('backToHome')}
@@ -69,6 +69,12 @@ function RouteComponent() {
         <h3 className='text-lg text-muted-foreground mt-4'>
           {t('orderConfirmationDescription')}
         </h3>
+      </div>
+      <div className='flex items-center justify-between w-full p-3 sm:px-4 sm:py-6'>
+        <Link to='/' className='flex items-center gap-2'>
+          <ArrowLeftIcon className='w-4 h-4' />
+          {t('backToHome')}
+        </Link>
       </div>
     </>
   );
