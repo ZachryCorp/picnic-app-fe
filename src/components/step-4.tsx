@@ -356,10 +356,12 @@ export function Step4() {
         firstName: user.firstName || '',
         lastName: user.lastName,
         ein: user.ein,
+        location: user.location,
+        additionalChildrenReason,
         park,
         employeeTickets: 1,
         guestTickets: totalGuestTickets,
-        childrenTickets: totalChildrenTickets,
+        childrenTickets: additionalChildren,
         additionalFullTickets: fullTicketCount,
         additionalMealTickets: mealTicketCount,
         totalTickets:
