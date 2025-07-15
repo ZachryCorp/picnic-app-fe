@@ -67,12 +67,18 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Department/Project/Plant/Hotel'
-      />
+      <DataTableColumnHeader column={column} title='Dept/Project/Plant/Hotel' />
     ),
     accessorKey: 'user.location',
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Park' />
+    ),
+    accessorKey: 'park',
+    filterFn: (row, _, value: string[]) => {
+      return value.length === 0 || value.includes(row.getValue('park'));
+    },
   },
   {
     header: 'Employee + Guest',
@@ -181,15 +187,6 @@ export const columns: ColumnDef<Submission>[] = [
     filterFn: (row, _, value: boolean | null) => {
       if (value === null) return true;
       return row.original.deductionPeriods > 0 === value;
-    },
-  },
-  {
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Park' />
-    ),
-    accessorKey: 'park',
-    filterFn: (row, _, value: string[]) => {
-      return value.length === 0 || value.includes(row.getValue('park'));
     },
   },
   {

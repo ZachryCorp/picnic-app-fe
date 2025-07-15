@@ -38,6 +38,14 @@ export default function PayrollDeductionForm() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Cleanup previous PDF URL if exists
+    if (pdfCleanup) {
+      pdfCleanup();
+    }
+    setPdfData(null);
+    setPdfFileName('');
+    setPdfFileSize(0);
+
     const checkMobile = () => {
       setIsMobile(
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -79,19 +87,6 @@ export default function PayrollDeductionForm() {
   const sigCanvasRef = useRef<SignatureCanvas>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Cleanup PDF URL when component unmounts or new PDF is generated
-  useEffect(() => {
-    return () => {
-      if (pdfCleanup) {
-        pdfCleanup();
-      }
-      // Reset PDF data if user goes back to step 3
-      setPdfData(null);
-      setPdfFileName('');
-      setPdfFileSize(0);
-    };
-  }, [pdfCleanup]);
-
   const handleSubmit = async (data: PayrollDeductionFormValues) => {
     if (sigCanvasRef.current?.isEmpty()) {
       setSignatureError('Please sign the form');
@@ -105,8 +100,10 @@ export default function PayrollDeductionForm() {
       // Cleanup previous PDF URL if exists
       if (pdfCleanup) {
         pdfCleanup();
-        setPdfCleanup(null);
       }
+      setPdfData(null);
+      setPdfFileName('');
+      setPdfFileSize(0);
 
       // 1. Load PDF
       const arrayBuffer = await fetch('/payroll-deduction-form.pdf').then((r) =>
