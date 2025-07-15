@@ -10,6 +10,7 @@ import {
   getSortedRowModel,
   Row,
   ColumnFiltersState,
+  Column,
 } from '@tanstack/react-table';
 import { mkConfig, generateCsv, download } from 'export-to-csv';
 import { Submission } from '@/types';
@@ -33,6 +34,42 @@ interface DataTableProps<TData extends Submission, TValue> {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
 }
+
+const getPinningStyles = <T extends Submission>(
+  column: Column<T>
+): { className: string; style: React.CSSProperties } => {
+  const isPinned = column.getIsPinned();
+
+  if (isPinned === 'right') {
+    return {
+      className: 'sticky z-30 bg-background',
+      style: {
+        right: 0,
+        borderLeft: '1px solid hsl(var(--border))',
+        boxShadow: '-4px 0 6px -1px rgba(0, 0, 0, 0.1)',
+      },
+    };
+  }
+
+  if (isPinned === 'left') {
+    const isLastLeftColumn = column.getIsLastColumn('left');
+    return {
+      className: 'sticky z-30 bg-background',
+      style: {
+        left: column.getStart('left'),
+        borderRight: isLastLeftColumn ? '1px solid hsl(var(--border))' : 'none',
+        boxShadow: isLastLeftColumn
+          ? '4px 0 6px -1px rgba(0, 0, 0, 0.1)'
+          : 'none',
+      },
+    };
+  }
+
+  return {
+    className: 'bg-background',
+    style: {},
+  };
+};
 
 export function DataTable<TData extends Submission, TValue>({
   data,
@@ -63,6 +100,7 @@ export function DataTable<TData extends Submission, TValue>({
     initialState: {
       columnPinning: {
         right: ['edit'],
+        left: ['user_firstName', 'user_lastName', 'user_ein'],
       },
       columnVisibility: {
         childrenVerification: false,
@@ -177,22 +215,16 @@ export function DataTable<TData extends Submission, TValue>({
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     const { column } = header;
-                    const isPinned = column.getIsPinned();
+                    const pinningStyles = getPinningStyles(column);
 
                     return (
                       <TableHead
                         key={header.id}
-                        className={`
-                        pl-4 tracking-wider border-b
-                        ${
-                          isPinned === 'right'
-                            ? 'sticky right-0 z-20 bg-background shadow-lg border-l-2 border-border'
-                            : 'bg-background'
-                        }
-                      `}
+                        className={`pl-4 tracking-wider border-b ${pinningStyles.className}`}
                         style={{
                           width: header.getSize(),
                           minWidth: header.getSize(),
+                          ...pinningStyles.style,
                         }}
                       >
                         {header.isPlaceholder
@@ -217,22 +249,16 @@ export function DataTable<TData extends Submission, TValue>({
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
-                      const isPinned = column.getIsPinned();
+                      const pinningStyles = getPinningStyles(column);
 
                       return (
                         <TableCell
                           key={cell.id}
-                          className={`
-                            whitespace-nowrap relative
-                            ${
-                              isPinned === 'right'
-                                ? 'sticky right-0 z-10 bg-background group-hover:bg-muted shadow-lg border-l-2 border-border'
-                                : 'bg-background group-hover:bg-muted/50'
-                            }
-                          `}
+                          className={`whitespace-nowrap ${pinningStyles.className} group-hover:bg-muted/50`}
                           style={{
                             width: cell.column.getSize(),
                             minWidth: cell.column.getSize(),
+                            ...pinningStyles.style,
                           }}
                         >
                           {flexRender(
@@ -260,22 +286,16 @@ export function DataTable<TData extends Submission, TValue>({
                 <TableRow key={footerGroup.id}>
                   {footerGroup.headers.map((header) => {
                     const { column } = header;
-                    const isPinned = column.getIsPinned();
+                    const pinningStyles = getPinningStyles(column);
 
                     return (
                       <TableHead
                         key={header.id}
-                        className={`
-                        whitespace-nowrap relative
-                        ${
-                          isPinned === 'right'
-                            ? 'sticky right-0 z-10 bg-muted group-hover:bg-muted shadow-lg border-l-2 border-border'
-                            : 'bg-muted group-hover:bg-muted/50'
-                        }
-                      `}
+                        className={`whitespace-nowrap ${pinningStyles.className.replace('bg-background', 'bg-muted')} group-hover:bg-muted/50`}
                         style={{
                           width: header.getSize(),
                           minWidth: header.getSize(),
+                          ...pinningStyles.style,
                         }}
                       >
                         {header.placeholderId

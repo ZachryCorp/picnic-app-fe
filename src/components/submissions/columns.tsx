@@ -255,7 +255,6 @@ export const columns: ColumnDef<Submission>[] = [
     header: 'Edit',
     accessorKey: 'edit',
     cell: ({ row }) => {
-      console.log(row.original);
       const [open, setOpen] = useState(false);
       const closeModal = () => setOpen(false);
 
