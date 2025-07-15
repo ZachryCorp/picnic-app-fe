@@ -12,7 +12,7 @@ import {
 } from './ui/table';
 import { ProvidedTicketsTable } from './provided-tickets-table';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormStepper } from '@/hooks/form';
 import { useTranslation } from 'react-i18next';
@@ -49,11 +49,18 @@ export function Step3() {
   const [ticketQuantity, setTicketQuantity] = useState(fullTicketCount);
   const [mealTicketQuantity, setMealTicketQuantity] = useState(mealTicketCount);
 
+  // Reset ticket quantities on mount
+  useEffect(() => {
+    setFullTicketCount(0);
+    setMealTicketCount(0);
+    setPayrollDeductionAmount(0);
+  }, []);
+
   const form = useForm<Step3Values>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
-      fullTicketQuantity: fullTicketCount,
-      mealTicketQuantity: mealTicketCount,
+      fullTicketQuantity: 0,
+      mealTicketQuantity: 0,
     },
   });
 
