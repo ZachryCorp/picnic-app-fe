@@ -31,6 +31,7 @@ export function Step2() {
     setUser,
     park,
     setChildrenVerification,
+    setAdditionalChildren,
     setAdditionalChildrenReason,
   } = useFormStepper();
 
@@ -65,8 +66,8 @@ export function Step2() {
     setUser({
       ...user,
       guest: form.getValues('guestTickets') ? true : false,
-      children: form.getValues('childrenTickets'),
     });
+    setAdditionalChildren(form.getValues('childrenTickets'));
     setIncludePayrollDeduction(false);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
     setChildrenVerification(
@@ -79,8 +80,8 @@ export function Step2() {
     setUser({
       ...user,
       guest: form.getValues('guestTickets') ? true : false,
-      children: form.getValues('childrenTickets'),
     });
+    setAdditionalChildren(form.getValues('childrenTickets'));
     setIncludePayrollDeduction(true);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
     setChildrenVerification(
@@ -325,7 +326,7 @@ export function Step2() {
           <div className='flex gap-2'>
             <Button
               onClick={form.handleSubmit(handlePurchaseTickets)}
-              variant='default'
+              variant='outline'
               size='sm'
             >
               {t('yes')}

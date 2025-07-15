@@ -13,6 +13,9 @@ interface FormStepper {
   childrenVerification: boolean;
   setChildrenVerification: (verification: boolean) => void;
 
+  additionalChildren: number;
+  setAdditionalChildren: (children: number) => void;
+
   additionalChildrenReason: string;
   setAdditionalChildrenReason: (reason: string) => void;
 
@@ -59,6 +62,10 @@ export const useFormStepper = create<FormStepper>()((set) => ({
   childrenVerification: false,
   setChildrenVerification: (verification: boolean) =>
     set({ childrenVerification: verification }),
+
+  additionalChildren: 0,
+  setAdditionalChildren: (children: number) =>
+    set({ additionalChildren: children }),
 
   additionalChildrenReason: '',
   setAdditionalChildrenReason: (reason: string) =>

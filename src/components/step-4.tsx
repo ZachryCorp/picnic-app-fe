@@ -54,6 +54,7 @@ export function Step4() {
     pdfData,
     pdfFileName,
     pdfFileSize,
+    additionalChildren,
     decrementCurrentStep,
   } = useFormStepper();
 
@@ -337,7 +338,7 @@ export function Step4() {
       additionalFullTicket: fullTicketCount,
       additionalMealTicket: mealTicketCount,
       childrenVerification,
-      pendingDependentChildren: user.children,
+      pendingDependentChildren: additionalChildren,
       additionalChildrenReason,
       payrollDeduction: !!payrollDeductionAmount,
       deductionPeriods,
