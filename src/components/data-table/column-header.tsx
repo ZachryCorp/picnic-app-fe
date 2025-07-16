@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   column: Column<TData, TValue>;
-  title: string;
+  title: React.ReactNode;
   enableHide?: boolean;
 }
 
@@ -25,7 +25,7 @@ export function DataTableColumnHeader<TData, TValue>({
   enableHide = false,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>;
+    return <div className={cn('text-left', className)}>{title}</div>;
   }
 
   return (
@@ -35,15 +35,15 @@ export function DataTableColumnHeader<TData, TValue>({
           <Button
             variant='ghost'
             size='sm'
-            className='-ml-4 h-8 data-[state=open]:bg-accent'
+            className='-ml-4 h-auto py-2 px-2 data-[state=open]:bg-accent whitespace-normal text-left justify-start'
           >
-            <span>{title}</span>
+            <span className='mr-1'>{title}</span>
             {column.getIsSorted() === 'desc' ? (
-              <ArrowDown />
+              <ArrowDown className='ml-auto h-4 w-4 shrink-0' />
             ) : column.getIsSorted() === 'asc' ? (
-              <ArrowUp />
+              <ArrowUp className='ml-auto h-4 w-4 shrink-0' />
             ) : (
-              <ChevronsUpDown />
+              <ChevronsUpDown className='ml-auto h-4 w-4 shrink-0' />
             )}
           </Button>
         </DropdownMenuTrigger>

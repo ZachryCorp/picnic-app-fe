@@ -229,7 +229,7 @@ export function DataTable<TData extends Submission, TValue>({
                     return (
                       <TableHead
                         key={header.id}
-                        className={`pl-4 tracking-wider border-b ${pinningStyles.className}`}
+                        className={`pl-4 pr-2 py-3 tracking-wider border-b text-xs font-medium ${pinningStyles.className}`}
                         style={{
                           width: header.getSize(),
                           minWidth: header.getSize(),

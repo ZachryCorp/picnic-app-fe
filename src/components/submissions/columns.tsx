@@ -96,8 +96,19 @@ export const columns: ColumnDef<Submission>[] = [
     },
   },
   {
-    header: 'Employee + Guest',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Employee +<br />
+            Guest
+          </>
+        }
+      />
+    ),
     accessorKey: 'guest',
+    size: 100,
     cell: ({ row }) => {
       return row.original.guest ? 2 : 1;
     },
@@ -108,15 +119,37 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Last Year Children Count' />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Last Year
+            <br />
+            Children
+            <br />
+            Count
+          </>
+        }
+      />
     ),
     accessorKey: 'user.children',
+    size: 120,
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Req. Children' />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Req.
+            <br />
+            Children
+          </>
+        }
+      />
     ),
     accessorKey: 'pendingDependentChildren',
+    size: 100,
     cell: ({ row }) => {
       const user = row.original.user;
       return row.original.childrenVerification
@@ -135,10 +168,17 @@ export const columns: ColumnDef<Submission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Total Full Tickets to Purchase'
+        title={
+          <>
+            Total Full
+            <br />
+            Tickets
+          </>
+        }
       />
     ),
     accessorKey: 'additionalFullTicket',
+    size: 100,
     enableResizing: true,
     cell: ({ row }) => {
       const guest = row.original.guest ? 2 : 1;
@@ -155,14 +195,22 @@ export const columns: ColumnDef<Submission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Total Meal Tickets to Purchase'
+        title={
+          <>
+            Total Meal
+            <br />
+            Tickets
+          </>
+        }
       />
     ),
     accessorKey: 'additionalMealTicket',
+    size: 100,
     enableResizing: true,
   },
   {
     header: 'Total Tickets',
+    size: 110,
     cell: ({ row }) => {
       const guest = row.original.guest ? 2 : 1;
       const additionalFullTicket = row.original.additionalFullTicket;
@@ -202,9 +250,19 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Payroll Deductions' />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Payroll
+            <br />
+            Deductions
+          </>
+        }
+      />
     ),
     accessorKey: 'deductionPeriods',
+    size: 110,
     filterFn: (row, _, value: boolean | null) => {
       if (value === null) return true;
       return row.original.deductionPeriods > 0 === value;
@@ -236,7 +294,13 @@ export const columns: ColumnDef<Submission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Additional Children Reason'
+        title={
+          <>
+            Additional
+            <br />
+            Children Reason
+          </>
+        }
       />
     ),
     accessorKey: 'additionalChildrenReason',
