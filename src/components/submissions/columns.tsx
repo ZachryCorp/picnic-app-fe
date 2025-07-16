@@ -108,7 +108,13 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Children' />
+      <DataTableColumnHeader column={column} title='Last Year Children Count' />
+    ),
+    accessorKey: 'user.children',
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Req. Children' />
     ),
     accessorKey: 'pendingDependentChildren',
     cell: ({ row }) => {
