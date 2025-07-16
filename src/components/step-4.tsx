@@ -332,7 +332,7 @@ export function Step4() {
 
   const onSubmit = (data: Step4Values) => {
     const submissionData = {
-      userId: user.id,
+      userId: user.ein,
       park,
       guest: user.guest,
       additionalFullTicket: fullTicketCount,

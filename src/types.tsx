@@ -1,8 +1,7 @@
 export type User = {
-  id: string;
+  ein: number;
   lastName: string;
   firstName?: string;
-  ein: number;
   jobNumber?: string;
   location?: string;
   email: string;
@@ -25,7 +24,6 @@ export type Submission = {
   additionalChildrenReason: string;
   childrenVerified: boolean;
   pendingDependentChildren: number;
-  ticketsToBeDistributed: number;
   ticketNumber: string;
   notes: string;
   // PDF fields
