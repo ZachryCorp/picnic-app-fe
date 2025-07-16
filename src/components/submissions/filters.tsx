@@ -26,6 +26,8 @@ interface FiltersProps {
   availableJobNumbers: string[];
   hasChildrenVerification: boolean | null;
   onChildrenVerificationChange: (value: boolean | null) => void;
+  hasCompleted: boolean | null;
+  onCompletedChange: (value: boolean | null) => void;
 }
 
 export function Filters({
@@ -42,6 +44,8 @@ export function Filters({
   availableJobNumbers,
   hasChildrenVerification,
   onChildrenVerificationChange,
+  hasCompleted,
+  onCompletedChange,
 }: FiltersProps) {
   const handleParkToggle = (park: string) => {
     if (selectedParks.includes(park)) {
@@ -205,6 +209,27 @@ export function Filters({
             </DropdownMenuGroup>
           </>
         )}
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Completed</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem
+            checked={hasCompleted === true}
+            onCheckedChange={() =>
+              onCompletedChange(hasCompleted === true ? null : true)
+            }
+          >
+            Completed
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={hasCompleted === false}
+            onCheckedChange={() =>
+              onCompletedChange(hasCompleted === false ? null : false)
+            }
+          >
+            Not Completed
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -75,7 +75,9 @@ export function DataTable<TData extends Submission, TValue>({
   data,
   columns,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: 'completed', desc: false },
+  ]);
   const [globalFilter, setGlobalFilter] = useState<any>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -156,6 +158,9 @@ export function DataTable<TData extends Submission, TValue>({
   const hasChildrenVerification = table
     .getColumn('childrenVerification')
     ?.getFilterValue() as boolean | null;
+  const hasCompleted = table.getColumn('completed')?.getFilterValue() as
+    | boolean
+    | null;
 
   return (
     <div>
@@ -194,6 +199,10 @@ export function DataTable<TData extends Submission, TValue>({
             hasChildrenVerification={hasChildrenVerification}
             onChildrenVerificationChange={(value) => {
               table.getColumn('childrenVerification')?.setFilterValue(value);
+            }}
+            hasCompleted={hasCompleted}
+            onCompletedChange={(value) => {
+              table.getColumn('completed')?.setFilterValue(value);
             }}
           />
           {(globalFilter || sorting.length > 0 || columnFilters.length > 0) && (

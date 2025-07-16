@@ -31,6 +31,7 @@ export default function PayrollDeductionForm() {
     payrollDeductionAmount,
     incrementCurrentStep,
     decrementCurrentStep,
+    setDeductionPeriods,
     setPdfData,
     setPdfFileName,
     setPdfFileSize,
@@ -141,7 +142,7 @@ export default function PayrollDeductionForm() {
       setPdfData(pdfBytes.buffer);
       setPdfFileName(fileName);
       setPdfFileSize(pdfBytes.length);
-
+      setDeductionPeriods(parseInt(data.payPeriods));
       setPdfUrl(url);
       setPdfCleanup(() => cleanup);
 

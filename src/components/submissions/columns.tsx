@@ -1,6 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Submission } from '@/types';
-import { PencilIcon, AlertTriangleIcon, CircleAlert } from 'lucide-react';
+import {
+  PencilIcon,
+  AlertTriangleIcon,
+  CircleAlert,
+  CircleCheck,
+  CircleX,
+} from 'lucide-react';
 
 import { DataTableColumnHeader } from '../data-table/column-header';
 import { Button } from '../ui/button';
@@ -78,6 +84,15 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: 'park',
     filterFn: (row, _, value: string[]) => {
       return value.length === 0 || value.includes(row.getValue('park'));
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Company' />
+    ),
+    accessorKey: 'user.company',
+    filterFn: (row, _, value: string[]) => {
+      return value.length === 0 || value.includes(row.getValue('user.company'));
     },
   },
   {
@@ -249,6 +264,19 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: 'pdf',
     cell: ({ row }) => {
       return <PdfViewerModal submission={row.original} />;
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Completed' />
+    ),
+    accessorKey: 'completed',
+    cell: ({ row }) => {
+      return row.original.completed ? (
+        <CircleCheck className='w-4 h-4 text-success' />
+      ) : (
+        <CircleX className='w-4 h-4 text-destructive' />
+      );
     },
   },
   {

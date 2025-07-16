@@ -4,6 +4,7 @@ export type User = {
   firstName?: string;
   jobNumber?: string;
   location?: string;
+  company?: string;
   email: string;
   children: number;
   guest: boolean;
@@ -26,6 +27,7 @@ export type Submission = {
   pendingDependentChildren: number;
   ticketNumber: string;
   notes: string;
+  completed: boolean;
   // PDF fields
   pdfFile?: ArrayBuffer | null;
   pdfFileName?: string | null;

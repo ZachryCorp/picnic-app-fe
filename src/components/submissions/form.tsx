@@ -29,7 +29,7 @@ export function SubmissionForm({
 
   const form = useForm<Submission>({
     defaultValues: submission ?? {
-      park: '',
+      park: 'Carowinds',
       additionalFullTicket: 0,
       additionalMealTicket: 0,
       ticketNumber: '',
@@ -38,6 +38,7 @@ export function SubmissionForm({
       childrenVerification: false,
       childrenVerified: false,
       notes: '',
+      completed: false,
     },
   });
 
@@ -98,7 +99,7 @@ export function SubmissionForm({
           name='additionalFullTicket'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Ticket</FormLabel>
+              <FormLabel>Additional Full Ticket</FormLabel>
               <Input type='number' {...field} />
             </FormItem>
           )}
@@ -108,7 +109,7 @@ export function SubmissionForm({
           name='additionalMealTicket'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Meal Ticket</FormLabel>
+              <FormLabel>Additional Meal Ticket</FormLabel>
               <Input type='number' {...field} />
             </FormItem>
           )}
@@ -120,32 +121,6 @@ export function SubmissionForm({
             <FormItem>
               <FormLabel>Ticket Number</FormLabel>
               <Input type='text' {...field} />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='childrenVerification'
-          render={({ field }) => (
-            <FormItem className='flex flex-row items-center gap-2'>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <FormLabel>Dependent Children Verification</FormLabel>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='payrollDeduction'
-          render={({ field }) => (
-            <FormItem className='flex flex-row items-center gap-2'>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <FormLabel>Payroll Deduction</FormLabel>
             </FormItem>
           )}
         />
@@ -166,6 +141,45 @@ export function SubmissionForm({
             <FormItem>
               <FormLabel>Notes</FormLabel>
               <Textarea {...field} />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='childrenVerification'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Approve Dependent Children Request</FormLabel>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='payrollDeduction'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Payroll Deduction</FormLabel>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='completed'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Completed</FormLabel>
             </FormItem>
           )}
         />
