@@ -170,6 +170,41 @@ export const columns: ColumnDef<Submission>[] = [
         column={column}
         title={
           <>
+            Additional
+            <br />
+            Children Reason
+          </>
+        }
+      />
+    ),
+    accessorKey: 'additionalChildrenReason',
+    cell: ({ row }) => {
+      if (
+        row.original.additionalChildrenReason &&
+        row.original.additionalChildrenReason.length > 32
+      ) {
+        return (
+          <Tooltip>
+            <TooltipTrigger className='w-4' asChild>
+              <span className='truncate'>
+                {row.original.additionalChildrenReason.slice(0, 32)}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className='max-w-xs'>
+              {row.original.additionalChildrenReason}
+            </TooltipContent>
+          </Tooltip>
+        );
+      }
+      return row.original.additionalChildrenReason || '-';
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
             Total Full
             <br />
             Tickets
@@ -269,6 +304,13 @@ export const columns: ColumnDef<Submission>[] = [
     },
   },
   {
+    header: 'PDF',
+    accessorKey: 'pdf',
+    cell: ({ row }) => {
+      return <PdfViewerModal submission={row.original} />;
+    },
+  },
+  {
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Notes' />
     ),
@@ -288,52 +330,6 @@ export const columns: ColumnDef<Submission>[] = [
         );
       }
       return row.original.notes || '-';
-    },
-  },
-  {
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={
-          <>
-            Additional
-            <br />
-            Children Reason
-          </>
-        }
-      />
-    ),
-    accessorKey: 'additionalChildrenReason',
-    cell: ({ row }) => {
-      if (
-        row.original.additionalChildrenReason &&
-        row.original.additionalChildrenReason.length > 32
-      ) {
-        return (
-          <Tooltip>
-            <TooltipTrigger className='w-4' asChild>
-              <span className='truncate'>
-                {row.original.additionalChildrenReason.slice(0, 32)}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {row.original.additionalChildrenReason}
-            </TooltipContent>
-          </Tooltip>
-        );
-      }
-      return row.original.additionalChildrenReason || '-';
-    },
-  },
-  {
-    header: 'Children Verification',
-    accessorKey: 'childrenVerification',
-  },
-  {
-    header: 'PDF',
-    accessorKey: 'pdf',
-    cell: ({ row }) => {
-      return <PdfViewerModal submission={row.original} />;
     },
   },
   {
