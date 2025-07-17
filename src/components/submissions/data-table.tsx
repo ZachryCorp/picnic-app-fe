@@ -234,7 +234,7 @@ export function DataTable<TData extends Submission, TValue>({
       }
 
       // Add each PDF to the zip
-      rowsWithPdfs.forEach((row, index) => {
+      rowsWithPdfs.forEach((row) => {
         const promise = getSubmissionPdf(row.original.id.toString())
           .then((pdfBlob) => {
             if (pdfBlob) {
