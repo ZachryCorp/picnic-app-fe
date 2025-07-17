@@ -53,6 +53,8 @@ export function Step3() {
   useEffect(() => {
     setFullTicketCount(0);
     setMealTicketCount(0);
+    setTicketQuantity(0);
+    setMealTicketQuantity(0);
     setPayrollDeductionAmount(0);
   }, []);
 

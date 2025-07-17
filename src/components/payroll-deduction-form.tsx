@@ -88,6 +88,8 @@ export default function PayrollDeductionForm() {
   const sigCanvasRef = useRef<SignatureCanvas>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
+  const [signed, setSigned] = useState(false);
+
   const handleSubmit = async (data: PayrollDeductionFormValues) => {
     if (sigCanvasRef.current?.isEmpty()) {
       setSignatureError('Please sign the form');
@@ -96,6 +98,7 @@ export default function PayrollDeductionForm() {
 
     setSignatureError('');
     setIsGeneratingPdf(true);
+    setSigned(true);
 
     try {
       // Cleanup previous PDF URL if exists
@@ -318,22 +321,27 @@ export default function PayrollDeductionForm() {
             <div className='flex justify-end gap-2'>
               <Button
                 type='button'
-                onClick={() => sigCanvasRef.current?.clear()}
+                onClick={() => {
+                  sigCanvasRef.current?.clear();
+                  setSigned(false);
+                }}
                 variant='outline'
                 disabled={isGeneratingPdf}
               >
                 {t('clearSignature')}
               </Button>
-              <Button type='submit' disabled={isGeneratingPdf}>
-                {isGeneratingPdf ? (
-                  <>
-                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                    Generating PDF...
-                  </>
-                ) : (
-                  t('next')
-                )}
-              </Button>
+              {(!signed || !pdfUrl) && (
+                <Button type='submit' disabled={isGeneratingPdf}>
+                  {isGeneratingPdf ? (
+                    <>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+                      Generating PDF...
+                    </>
+                  ) : (
+                    t('next')
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </form>
