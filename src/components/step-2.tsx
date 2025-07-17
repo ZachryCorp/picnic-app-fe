@@ -215,46 +215,20 @@ export function Step2() {
                 </FormItem>
               )}
             />
-            <div
-              className={
-                showChildrenVerification
-                  ? 'flex flex-col gap-2 p-4 rounded-md bg-warning'
-                  : ''
-              }
-            >
-              {showChildrenVerification && (
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-start sm:items-end gap-2'>
-                    <TriangleAlert className='w-5 h-5 text-warning-foreground' />
-                    <p className='text-sm text-warning-foreground'>
-                      {t('childrenVerification')}
-                    </p>
-                  </div>
-                  <div className='flex'>
-                    <Button
-                      onClick={() => {
-                        setShowChildrenVerification(false);
-                        setInitialChildrenVerificationRequired(false);
-                      }}
-                      variant='ghost'
-                      size='sm'
-                    >
-                      <Check className='w-4 h-4 text-success' />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowChildrenVerification(false);
-                        setShowAdditionalChildInput(true);
-                        setShowAdditionalChildrenTextArea(true);
-                        setInitialChildrenVerificationRequired(true);
-                      }}
-                      variant='ghost'
-                      size='sm'
-                    >
-                      <X className='w-4 h-4 text-destructive' />
-                    </Button>
-                  </div>
-                </div>
+            <div>
+              {showAdditionalChildrenTextArea && (
+                <FormItem className='flex items-center justify-between mb-2'>
+                  <FormLabel>Last Year</FormLabel>
+                  <FormControl>
+                    <Input
+                      className='w-16'
+                      readOnly
+                      disabled
+                      value={user?.children}
+                      type='number'
+                    />
+                  </FormControl>
+                </FormItem>
               )}
               <FormField
                 control={form.control}
@@ -267,11 +241,6 @@ export function Step2() {
                           ? t('correctNumberOfChildren')
                           : t('children')}
                       </FormLabel>
-                      <p className='max-w-xs sm:max-w-sm text-xs text-muted-foreground'>
-                        <span className='font-bold'>
-                          {t('childrenDisclaimer')}
-                        </span>
-                      </p>
                     </div>
                     <div className='flex items-end flex-col gap-2'>
                       <FormControl>
@@ -297,6 +266,42 @@ export function Step2() {
                   </FormItem>
                 )}
               />
+              {showChildrenVerification && (
+                <div className='mt-2 pl-4 flex items-center justify-between'>
+                  <div className='flex flex-col gap-2'>
+                    <p className='text-sm'>{t('childrenVerification')}</p>
+                    <p className='max-w-xs sm:max-w-sm text-xs text-muted-foreground'>
+                      <span className='font-bold'>
+                        {t('childrenDisclaimer')}
+                      </span>
+                    </p>
+                  </div>
+                  <div className='flex gap-2'>
+                    <Button
+                      onClick={() => {
+                        setShowChildrenVerification(false);
+                        setInitialChildrenVerificationRequired(false);
+                      }}
+                      variant='outline'
+                      size='sm'
+                    >
+                      {t('yes')}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setShowChildrenVerification(false);
+                        setShowAdditionalChildInput(true);
+                        setShowAdditionalChildrenTextArea(true);
+                        setInitialChildrenVerificationRequired(true);
+                      }}
+                      variant='outline'
+                      size='sm'
+                    >
+                      {t('no')}
+                    </Button>
+                  </div>
+                </div>
+              )}
               {showAdditionalChildrenTextArea &&
                 childrenTickets > user?.children && (
                   <FormField
