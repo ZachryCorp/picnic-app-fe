@@ -12,7 +12,7 @@ import {
 } from './ui/table';
 import { ProvidedTicketsTable } from './provided-tickets-table';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormStepper } from '@/hooks/form';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ import { step3Schema } from '@/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { getMealTicketPrice, getTicketPrice } from '@/lib/utils';
+import { ArrowLeftIcon } from 'lucide-react';
 
 type Step3Values = z.infer<typeof step3Schema>;
 
@@ -27,8 +28,10 @@ export function Step3() {
   const { t } = useTranslation();
 
   const {
+    decrementCurrentStep,
     incrementCurrentStep,
     setPayrollDeductionAmount,
+    setIncludePayrollDeduction,
     fullTicketCount,
     mealTicketCount,
     setFullTicketCount,
@@ -46,11 +49,20 @@ export function Step3() {
   const [ticketQuantity, setTicketQuantity] = useState(fullTicketCount);
   const [mealTicketQuantity, setMealTicketQuantity] = useState(mealTicketCount);
 
+  // Reset ticket quantities on mount
+  useEffect(() => {
+    setFullTicketCount(0);
+    setMealTicketCount(0);
+    setTicketQuantity(0);
+    setMealTicketQuantity(0);
+    setPayrollDeductionAmount(0);
+  }, []);
+
   const form = useForm<Step3Values>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
-      fullTicketQuantity: fullTicketCount,
-      mealTicketQuantity: mealTicketCount,
+      fullTicketQuantity: 0,
+      mealTicketQuantity: 0,
     },
   });
 
@@ -61,6 +73,11 @@ export function Step3() {
       data.fullTicketQuantity * ticketPrice +
         data.mealTicketQuantity * mealTicketPrice
     );
+
+    if (data.fullTicketQuantity === 0 && data.mealTicketQuantity === 0) {
+      setIncludePayrollDeduction(false);
+      return;
+    }
     incrementCurrentStep();
   };
 
@@ -78,15 +95,28 @@ export function Step3() {
           <Table className='border'>
             <TableHeader className='bg-emerald-200'>
               <TableRow>
-                <TableHead>{t('typeOfTicket')}</TableHead>
-                <TableHead>{t('quantity')}</TableHead>
-                <TableHead>{t('price')}</TableHead>
-                <TableHead className='text-right'>{t('amountDue')}</TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('typeOfTicket')}
+                </TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('quantity')}
+                </TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('price')}
+                </TableHead>
+                <TableHead className='text-right text-xs sm:text-base'>
+                  {t('amount')}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>{t('fullTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('fullTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('fullTicketSmall')}
+                </TableCell>
                 <TableCell>
                   <FormField
                     control={form.control}
@@ -115,7 +145,12 @@ export function Step3() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>{t('mealTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('mealTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('mealTicketSmall')}
+                </TableCell>
                 <TableCell>
                   <FormField
                     control={form.control}
@@ -147,7 +182,7 @@ export function Step3() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell className='font-bold bg-emerald-200'>
+                <TableCell className='font-bold bg-emerald-200 text-[8px] sm:text-base'>
                   {t('totalPurchasedByEmployee')}
                 </TableCell>
                 <TableCell></TableCell>
@@ -162,7 +197,17 @@ export function Step3() {
               </TableRow>
             </TableFooter>
           </Table>
-          <div className='flex justify-end gap-2'>
+          <div className='flex justify-between gap-2'>
+            <Button
+              variant='ghost'
+              type='button'
+              onClick={() => {
+                decrementCurrentStep();
+              }}
+            >
+              <ArrowLeftIcon className='w-4 h-4' />
+              {t('back')}
+            </Button>
             <Button className='cursor-pointer' type='submit'>
               {t('next')}
             </Button>

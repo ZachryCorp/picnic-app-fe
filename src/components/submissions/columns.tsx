@@ -1,6 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Submission } from '@/types';
-import { PencilIcon, AlertTriangleIcon, CircleAlert } from 'lucide-react';
+import {
+  PencilIcon,
+  AlertTriangleIcon,
+  CircleAlert,
+  CircleCheck,
+  CircleX,
+} from 'lucide-react';
 
 import { DataTableColumnHeader } from '../data-table/column-header';
 import { Button } from '../ui/button';
@@ -12,6 +18,7 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import { SubmissionForm } from './form';
+import { PdfViewerModal } from './pdf-viewer-modal';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
@@ -52,7 +59,7 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Job#/Location/Plant' />
+      <DataTableColumnHeader column={column} title='Job No.' />
     ),
     id: 'jobNumber',
     accessorFn: (row) => row.user?.jobNumber,
@@ -65,8 +72,43 @@ export const columns: ColumnDef<Submission>[] = [
     },
   },
   {
-    header: 'Employee + Guest',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Dept/Project/Plant/Hotel' />
+    ),
+    accessorKey: 'user.location',
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Park' />
+    ),
+    accessorKey: 'park',
+    filterFn: (row, _, value: string[]) => {
+      return value.length === 0 || value.includes(row.getValue('park'));
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Company' />
+    ),
+    accessorKey: 'user.company',
+    filterFn: (row, _, value: string[]) => {
+      return value.length === 0 || value.includes(row.getValue('user.company'));
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Employee +<br />
+            Guest
+          </>
+        }
+      />
+    ),
     accessorKey: 'guest',
+    size: 100,
     cell: ({ row }) => {
       return row.original.guest ? 2 : 1;
     },
@@ -77,9 +119,37 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Children' />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Last Year
+            <br />
+            Children
+            <br />
+            Count
+          </>
+        }
+      />
+    ),
+    accessorKey: 'user.children',
+    size: 120,
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Req.
+            <br />
+            Children
+          </>
+        }
+      />
     ),
     accessorKey: 'pendingDependentChildren',
+    size: 100,
     cell: ({ row }) => {
       const user = row.original.user;
       return row.original.childrenVerification
@@ -98,10 +168,52 @@ export const columns: ColumnDef<Submission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Total Full Tickets to Purchase'
+        title={
+          <>
+            Additional
+            <br />
+            Children Reason
+          </>
+        }
+      />
+    ),
+    accessorKey: 'additionalChildrenReason',
+    cell: ({ row }) => {
+      if (
+        row.original.additionalChildrenReason &&
+        row.original.additionalChildrenReason.length > 32
+      ) {
+        return (
+          <Tooltip>
+            <TooltipTrigger className='w-4' asChild>
+              <span className='truncate'>
+                {row.original.additionalChildrenReason.slice(0, 32)}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className='max-w-xs'>
+              {row.original.additionalChildrenReason}
+            </TooltipContent>
+          </Tooltip>
+        );
+      }
+      return row.original.additionalChildrenReason || '-';
+    },
+  },
+  {
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Total Full
+            <br />
+            Tickets
+          </>
+        }
       />
     ),
     accessorKey: 'additionalFullTicket',
+    size: 100,
     enableResizing: true,
     cell: ({ row }) => {
       const guest = row.original.guest ? 2 : 1;
@@ -118,14 +230,22 @@ export const columns: ColumnDef<Submission>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Total Meal Tickets to Purchase'
+        title={
+          <>
+            Total Meal
+            <br />
+            Tickets
+          </>
+        }
       />
     ),
     accessorKey: 'additionalMealTicket',
+    size: 100,
     enableResizing: true,
   },
   {
     header: 'Total Tickets',
+    size: 110,
     cell: ({ row }) => {
       const guest = row.original.guest ? 2 : 1;
       const additionalFullTicket = row.original.additionalFullTicket;
@@ -165,21 +285,29 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Payroll Deductions' />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <>
+            Payroll
+            <br />
+            Deductions
+          </>
+        }
+      />
     ),
     accessorKey: 'deductionPeriods',
+    size: 110,
     filterFn: (row, _, value: boolean | null) => {
       if (value === null) return true;
       return row.original.deductionPeriods > 0 === value;
     },
   },
   {
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Park' />
-    ),
-    accessorKey: 'park',
-    filterFn: (row, _, value: string[]) => {
-      return value.length === 0 || value.includes(row.getValue('park'));
+    header: 'PDF',
+    accessorKey: 'pdf',
+    cell: ({ row }) => {
+      return <PdfViewerModal submission={row.original} />;
     },
   },
   {
@@ -206,31 +334,15 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Additional Children Reason'
-      />
+      <DataTableColumnHeader column={column} title='Completed' />
     ),
-    accessorKey: 'additionalChildrenReason',
+    accessorKey: 'completed',
     cell: ({ row }) => {
-      if (
-        row.original.additionalChildrenReason &&
-        row.original.additionalChildrenReason.length > 32
-      ) {
-        return (
-          <Tooltip>
-            <TooltipTrigger className='w-4' asChild>
-              <span className='truncate'>
-                {row.original.additionalChildrenReason.slice(0, 32)}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {row.original.additionalChildrenReason}
-            </TooltipContent>
-          </Tooltip>
-        );
-      }
-      return row.original.additionalChildrenReason || '-';
+      return row.original.completed ? (
+        <CircleCheck className='w-4 h-4 text-success' />
+      ) : (
+        <CircleX className='w-4 h-4 text-destructive' />
+      );
     },
   },
   {
@@ -253,10 +365,9 @@ export const columns: ColumnDef<Submission>[] = [
               </Button>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {row.original.childrenVerification &&
-                    !row.original.childrenVerified && (
-                      <CircleAlert className='w-4 h-4 text-destructive' />
-                    )}
+                  {row.original.childrenVerification && (
+                    <CircleAlert className='w-4 h-4 text-destructive' />
+                  )}
                 </TooltipTrigger>
                 <TooltipContent>
                   Children Verification is required for this order

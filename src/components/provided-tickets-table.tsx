@@ -20,7 +20,7 @@ export function ProvidedTicketsTable({
   const { t } = useTranslation();
 
   return (
-    <Table className='border'>
+    <Table className='border text-[9px] sm:text-base'>
       <TableHeader className='bg-blue-200'>
         <TableRow>
           <TableHead className='font-bold'>

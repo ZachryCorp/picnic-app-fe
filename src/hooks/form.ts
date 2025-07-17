@@ -13,6 +13,9 @@ interface FormStepper {
   childrenVerification: boolean;
   setChildrenVerification: (verification: boolean) => void;
 
+  additionalChildren: number;
+  setAdditionalChildren: (children: number) => void;
+
   additionalChildrenReason: string;
   setAdditionalChildrenReason: (reason: string) => void;
 
@@ -34,6 +37,14 @@ interface FormStepper {
 
   deductionPeriods: number;
   setDeductionPeriods: (periods: number) => void;
+
+  // PDF storage
+  pdfData: ArrayBuffer | null;
+  setPdfData: (data: ArrayBuffer | null) => void;
+  pdfFileName: string;
+  setPdfFileName: (fileName: string) => void;
+  pdfFileSize: number;
+  setPdfFileSize: (size: number) => void;
 }
 
 export const useFormStepper = create<FormStepper>()((set) => ({
@@ -52,6 +63,10 @@ export const useFormStepper = create<FormStepper>()((set) => ({
   setChildrenVerification: (verification: boolean) =>
     set({ childrenVerification: verification }),
 
+  additionalChildren: 0,
+  setAdditionalChildren: (children: number) =>
+    set({ additionalChildren: children }),
+
   additionalChildrenReason: '',
   setAdditionalChildrenReason: (reason: string) =>
     set({ additionalChildrenReason: reason }),
@@ -65,6 +80,7 @@ export const useFormStepper = create<FormStepper>()((set) => ({
     lastName: '',
     firstName: '',
     jobNumber: '',
+    location: '',
     email: '',
     children: 0,
     guest: false,
@@ -87,4 +103,12 @@ export const useFormStepper = create<FormStepper>()((set) => ({
 
   deductionPeriods: 0,
   setDeductionPeriods: (periods: number) => set({ deductionPeriods: periods }),
+
+  // PDF storage
+  pdfData: null,
+  setPdfData: (data: ArrayBuffer | null) => set({ pdfData: data }),
+  pdfFileName: '',
+  setPdfFileName: (fileName: string) => set({ pdfFileName: fileName }),
+  pdfFileSize: 0,
+  setPdfFileSize: (size: number) => set({ pdfFileSize: size }),
 }));

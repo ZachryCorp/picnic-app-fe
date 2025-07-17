@@ -9,7 +9,6 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 
-import { Check, X, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormStepper } from '@/hooks/form';
@@ -31,6 +30,7 @@ export function Step2() {
     setUser,
     park,
     setChildrenVerification,
+    setAdditionalChildren,
     setAdditionalChildrenReason,
   } = useFormStepper();
 
@@ -40,39 +40,52 @@ export function Step2() {
     useState(false);
   const [showAdditionalChildrenTextArea, setShowAdditionalChildrenTextArea] =
     useState(false);
+  const [
+    initialChildrenVerificationRequired,
+    setInitialChildrenVerificationRequired,
+  ] = useState(false);
 
   const form = useForm<Step2Values>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
       name: `${user?.firstName} ${user?.lastName}`,
       jobNumber: user?.jobNumber,
-      location: user?.jobNumber, // TODO: add location to user table
+      location: user?.location,
       employeeTickets: 0,
-      guestTickets: user?.guest ? 1 : 0,
+      guestTickets: undefined,
       childrenTickets: user?.children,
       additionalChildrenReason: '',
     },
   });
 
+  // watch for changes to childrenTickets
+  const childrenTickets = form.watch('childrenTickets');
+
   const handleSubmit = () => {
     setUser({
       ...user,
-      guest: form.getValues('guestTickets') > 0,
-      children: form.getValues('childrenTickets'),
+      guest: form.getValues('guestTickets') ? true : false,
     });
+    setAdditionalChildren(form.getValues('childrenTickets'));
     setIncludePayrollDeduction(false);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
+    setChildrenVerification(
+      initialChildrenVerificationRequired && childrenTickets > user?.children
+    );
     incrementCurrentStep();
   };
 
   const handlePurchaseTickets = () => {
     setUser({
       ...user,
-      guest: form.getValues('guestTickets') > 0,
-      children: form.getValues('childrenTickets'),
+      guest: form.getValues('guestTickets') ? true : false,
     });
+    setAdditionalChildren(form.getValues('childrenTickets'));
     setIncludePayrollDeduction(true);
     setAdditionalChildrenReason(form.getValues('additionalChildrenReason'));
+    setChildrenVerification(
+      initialChildrenVerificationRequired && childrenTickets > user?.children
+    );
     incrementCurrentStep();
   };
 
@@ -121,20 +134,20 @@ export function Step2() {
             name='location'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('location')}</FormLabel>
+                <FormLabel>{t('department')}</FormLabel>
                 <FormControl>
                   <Input
                     readOnly
                     {...field}
-                    placeholder={t('location')}
-                    value={user?.jobNumber ?? ''}
+                    placeholder={t('department')}
+                    value={user?.location ?? ''}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className='flex flex-col gap-1 max-w-96'>
+          <div className='flex flex-col gap-1'>
             <h2 className='text-xl font-semibold'>
               {t('ticketsProvidedByZachryCorp')}
             </h2>
@@ -187,8 +200,9 @@ export function Step2() {
                   <div className='flex items-end flex-col gap-2'>
                     <FormControl>
                       <Input
-                        className='w-16'
                         {...field}
+                        value={field.value ?? ''}
+                        className='w-16'
                         type='number'
                         min={0}
                         max={1}
@@ -200,45 +214,20 @@ export function Step2() {
                 </FormItem>
               )}
             />
-            <div
-              className={
-                showChildrenVerification
-                  ? 'flex flex-col gap-2 p-4 rounded-md bg-warning'
-                  : ''
-              }
-            >
-              {showChildrenVerification && (
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-start sm:items-end gap-2'>
-                    <TriangleAlert className='w-5 h-5 text-warning-foreground' />
-                    <p className='text-sm text-warning-foreground'>
-                      {t('childrenVerification')}
-                    </p>
-                  </div>
-                  <div className='flex'>
-                    <Button
-                      onClick={() => {
-                        setShowChildrenVerification(false);
-                      }}
-                      variant='ghost'
-                      size='sm'
-                    >
-                      <Check className='w-4 h-4 text-success' />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowChildrenVerification(false);
-                        setShowAdditionalChildInput(true);
-                        setShowAdditionalChildrenTextArea(true);
-                        setChildrenVerification(true);
-                      }}
-                      variant='ghost'
-                      size='sm'
-                    >
-                      <X className='w-4 h-4 text-destructive' />
-                    </Button>
-                  </div>
-                </div>
+            <div>
+              {showAdditionalChildrenTextArea && (
+                <FormItem className='flex items-center justify-between mb-2'>
+                  <FormLabel>Last Year</FormLabel>
+                  <FormControl>
+                    <Input
+                      className='w-16'
+                      readOnly
+                      disabled
+                      value={user?.children}
+                      type='number'
+                    />
+                  </FormControl>
+                </FormItem>
               )}
               <FormField
                 control={form.control}
@@ -251,11 +240,6 @@ export function Step2() {
                           ? t('correctNumberOfChildren')
                           : t('children')}
                       </FormLabel>
-                      <p className='max-w-xs sm:max-w-sm text-xs text-muted-foreground'>
-                        <span className='font-bold'>
-                          {t('childrenDisclaimer')}
-                        </span>
-                      </p>
                     </div>
                     <div className='flex items-end flex-col gap-2'>
                       <FormControl>
@@ -281,34 +265,72 @@ export function Step2() {
                   </FormItem>
                 )}
               />
-              {showAdditionalChildrenTextArea && (
-                <FormField
-                  control={form.control}
-                  name='additionalChildrenReason'
-                  render={({ field }) => (
-                    <FormItem className='mt-4'>
-                      <FormLabel>Additional Children Reason</FormLabel>
-                      <Textarea
-                        {...field}
-                        placeholder='Reason for additional children'
-                      />
-                    </FormItem>
-                  )}
-                />
+              {showChildrenVerification && (
+                <div className='mt-2 pl-4 flex items-center justify-between'>
+                  <div className='flex flex-col gap-2'>
+                    <p className='text-sm'>{t('childrenVerification')}</p>
+                    <p className='max-w-xs sm:max-w-sm text-xs text-muted-foreground'>
+                      <span className='font-bold'>
+                        {t('childrenDisclaimer')}
+                      </span>
+                    </p>
+                  </div>
+                  <div className='flex gap-2'>
+                    <Button
+                      onClick={() => {
+                        setShowChildrenVerification(false);
+                        setInitialChildrenVerificationRequired(false);
+                      }}
+                      variant='outline'
+                      size='sm'
+                    >
+                      {t('yes')}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setShowChildrenVerification(false);
+                        setShowAdditionalChildInput(true);
+                        setShowAdditionalChildrenTextArea(true);
+                        setInitialChildrenVerificationRequired(true);
+                      }}
+                      variant='outline'
+                      size='sm'
+                    >
+                      {t('no')}
+                    </Button>
+                  </div>
+                </div>
               )}
+              {showAdditionalChildrenTextArea &&
+                childrenTickets > user?.children && (
+                  <FormField
+                    control={form.control}
+                    name='additionalChildrenReason'
+                    render={({ field }) => (
+                      <FormItem className='mt-4'>
+                        <FormLabel>Additional Children Reason</FormLabel>
+                        <Textarea
+                          {...field}
+                          placeholder='Reason for additional children'
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                          }}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                )}
             </div>
           </div>
         </form>
       </Form>
       {!showChildrenVerification && (
         <div className='flex justify-between'>
-          <p className='text-sm text-muted-foreground'>
-            {t('additionalTicketsPrompt')}
-          </p>
+          <p className='font-bold'>{t('additionalTicketsPrompt')}</p>
           <div className='flex gap-2'>
             <Button
               onClick={form.handleSubmit(handlePurchaseTickets)}
-              variant='default'
+              variant='outline'
               size='sm'
             >
               {t('yes')}

@@ -8,6 +8,15 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { Checkbox } from '../ui/checkbox';
 import { Textarea } from '../ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { useState } from 'react';
 
 export function SubmissionForm({
   submission,
@@ -16,9 +25,11 @@ export function SubmissionForm({
   submission: Submission;
   closeModal?: () => void;
 }) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const form = useForm<Submission>({
     defaultValues: submission ?? {
-      park: '',
+      park: 'Carowinds',
       additionalFullTicket: 0,
       additionalMealTicket: 0,
       ticketNumber: '',
@@ -27,6 +38,7 @@ export function SubmissionForm({
       childrenVerification: false,
       childrenVerified: false,
       notes: '',
+      completed: false,
     },
   });
 
@@ -49,9 +61,11 @@ export function SubmissionForm({
       toast.success('Submission deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['submissions'] });
       if (closeModal) closeModal();
+      setShowDeleteDialog(false);
     },
     onError: () => {
       toast.error('Error deleting submission');
+      setShowDeleteDialog(false);
     },
   });
 
@@ -61,6 +75,10 @@ export function SubmissionForm({
 
   const handleDelete = () => {
     removeSubmission();
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
   };
 
   return (
@@ -81,7 +99,7 @@ export function SubmissionForm({
           name='additionalFullTicket'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Ticket</FormLabel>
+              <FormLabel>Additional Full Ticket</FormLabel>
               <Input type='number' {...field} />
             </FormItem>
           )}
@@ -91,7 +109,7 @@ export function SubmissionForm({
           name='additionalMealTicket'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Meal Ticket</FormLabel>
+              <FormLabel>Additional Meal Ticket</FormLabel>
               <Input type='number' {...field} />
             </FormItem>
           )}
@@ -103,32 +121,6 @@ export function SubmissionForm({
             <FormItem>
               <FormLabel>Ticket Number</FormLabel>
               <Input type='text' {...field} />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='childrenVerified'
-          render={({ field }) => (
-            <FormItem className='flex flex-row items-center gap-2'>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <FormLabel>Dependent Children Verification</FormLabel>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='payrollDeduction'
-          render={({ field }) => (
-            <FormItem className='flex flex-row items-center gap-2'>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <FormLabel>Payroll Deduction</FormLabel>
             </FormItem>
           )}
         />
@@ -152,17 +144,83 @@ export function SubmissionForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name='childrenVerification'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Approve Dependent Children Request</FormLabel>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='payrollDeduction'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Payroll Deduction</FormLabel>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='completed'
+          render={({ field }) => (
+            <FormItem className='flex flex-row items-center gap-2'>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel>Completed</FormLabel>
+            </FormItem>
+          )}
+        />
         <div className='flex justify-end gap-2'>
           <div className='flex justify-end'>
             <Button type='submit'>Update</Button>
           </div>
           <div className='flex justify-end'>
-            <Button variant='destructive' type='button' onClick={handleDelete}>
+            <Button
+              variant='destructive'
+              type='button'
+              onClick={handleDeleteClick}
+            >
               Delete
             </Button>
           </div>
         </div>
       </form>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className='max-w-96 w-96'>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this submission? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={handleDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }

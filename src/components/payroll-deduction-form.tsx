@@ -22,14 +22,31 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ArrowLeftIcon } from 'lucide-react';
 
 export default function PayrollDeductionForm() {
   const { t } = useTranslation();
-  const { user, payrollDeductionAmount, incrementCurrentStep } =
-    useFormStepper();
+  const {
+    user,
+    payrollDeductionAmount,
+    incrementCurrentStep,
+    decrementCurrentStep,
+    setDeductionPeriods,
+    setPdfData,
+    setPdfFileName,
+    setPdfFileSize,
+  } = useFormStepper();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Cleanup previous PDF URL if exists
+    if (pdfCleanup) {
+      pdfCleanup();
+    }
+    setPdfData(null);
+    setPdfFileName('');
+    setPdfFileSize(0);
+
     const checkMobile = () => {
       setIsMobile(
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -71,14 +88,7 @@ export default function PayrollDeductionForm() {
   const sigCanvasRef = useRef<SignatureCanvas>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Cleanup PDF URL when component unmounts or new PDF is generated
-  useEffect(() => {
-    return () => {
-      if (pdfCleanup) {
-        pdfCleanup();
-      }
-    };
-  }, [pdfCleanup]);
+  const [signed, setSigned] = useState(false);
 
   const handleSubmit = async (data: PayrollDeductionFormValues) => {
     if (sigCanvasRef.current?.isEmpty()) {
@@ -88,13 +98,16 @@ export default function PayrollDeductionForm() {
 
     setSignatureError('');
     setIsGeneratingPdf(true);
+    setSigned(true);
 
     try {
       // Cleanup previous PDF URL if exists
       if (pdfCleanup) {
         pdfCleanup();
-        setPdfCleanup(null);
       }
+      setPdfData(null);
+      setPdfFileName('');
+      setPdfFileSize(0);
 
       // 1. Load PDF
       const arrayBuffer = await fetch('/payroll-deduction-form.pdf').then((r) =>
@@ -127,6 +140,12 @@ export default function PayrollDeductionForm() {
       const pdfBytes = await pdfDoc.save();
       const { url, cleanup } = createPDFBlobUrl(pdfBytes);
 
+      // Store PDF data in Zustand state
+      const fileName = `payroll-deduction-${user?.ein || 'unknown'}-${Date.now()}.pdf`;
+      setPdfData(pdfBytes.buffer);
+      setPdfFileName(fileName);
+      setPdfFileSize(pdfBytes.length);
+      setDeductionPeriods(parseInt(data.payPeriods));
       setPdfUrl(url);
       setPdfCleanup(() => cleanup);
 
@@ -251,6 +270,9 @@ export default function PayrollDeductionForm() {
                   <Input
                     {...field}
                     placeholder={t('payPeriods')}
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                    }}
                     type='number'
                     min={1}
                     max={4}
@@ -285,25 +307,42 @@ export default function PayrollDeductionForm() {
               <p className='text-destructive'>{signatureError}</p>
             )}
           </div>
-          <div className='flex justify-end gap-2'>
+          <div className='flex justify-between gap-2'>
             <Button
+              variant='ghost'
               type='button'
-              onClick={() => sigCanvasRef.current?.clear()}
-              variant='outline'
-              disabled={isGeneratingPdf}
+              onClick={() => {
+                decrementCurrentStep();
+              }}
             >
-              {t('clearSignature')}
+              <ArrowLeftIcon className='w-4 h-4' />
+              {t('back')}
             </Button>
-            <Button type='submit' disabled={isGeneratingPdf}>
-              {isGeneratingPdf ? (
-                <>
-                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                  Generating PDF...
-                </>
-              ) : (
-                t('next')
+            <div className='flex justify-end gap-2'>
+              <Button
+                type='button'
+                onClick={() => {
+                  sigCanvasRef.current?.clear();
+                  setSigned(false);
+                }}
+                variant='outline'
+                disabled={isGeneratingPdf}
+              >
+                {t('clearSignature')}
+              </Button>
+              {(!signed || !pdfUrl) && (
+                <Button type='submit' disabled={isGeneratingPdf}>
+                  {isGeneratingPdf ? (
+                    <>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+                      Generating PDF...
+                    </>
+                  ) : (
+                    t('next')
+                  )}
+                </Button>
               )}
-            </Button>
+            </div>
           </div>
         </form>
 
@@ -332,6 +371,7 @@ export default function PayrollDeductionForm() {
                 src={pdfUrl}
               />
             )}
+
             <div className='flex justify-end gap-2'>
               <Button variant='secondary' asChild>
                 <a href={pdfUrl} download='filled-form.pdf'>
