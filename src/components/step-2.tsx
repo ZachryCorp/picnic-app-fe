@@ -9,7 +9,6 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 
-import { Check, X, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormStepper } from '@/hooks/form';
