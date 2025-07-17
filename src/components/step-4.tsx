@@ -411,18 +411,23 @@ export function Step4() {
           {t('section')} B - {t('employeePurchase')}
         </h2>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-          <Table className='border'>
+          <Table className='border text-[9px] sm:text-base'>
             <TableHeader className='bg-emerald-200'>
               <TableRow>
                 <TableHead>{t('typeOfTicket')}</TableHead>
                 <TableHead>{t('quantity')}</TableHead>
                 <TableHead>{t('price')}</TableHead>
-                <TableHead className='text-right'>{t('amountDue')}</TableHead>
+                <TableHead className='text-right'>{t('amount')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>{t('fullTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('fullTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('fullTicketSmall')}
+                </TableCell>
                 <TableCell>{fullTicketCount}</TableCell>
                 <TableCell>${ticketPrice}</TableCell>
                 <TableCell className='text-right'>
@@ -430,7 +435,12 @@ export function Step4() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>{t('mealTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('mealTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('mealTicketSmall')}
+                </TableCell>
                 <TableCell>{mealTicketCount}</TableCell>
                 <TableCell>${mealTicketPrice}</TableCell>
                 <TableCell className='text-right'>
@@ -440,7 +450,7 @@ export function Step4() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell className='font-bold bg-emerald-200'>
+                <TableCell className='font-bold bg-emerald-200 text-[9px] sm:text-base'>
                   {t('totalPurchasedByEmployee')}
                 </TableCell>
                 <TableCell></TableCell>
@@ -454,7 +464,7 @@ export function Step4() {
 
           <h2 className='text-2xl font-bold text-center'>{t('section')} C</h2>
           <Table className='border'>
-            <TableBody>
+            <TableBody className='text-[8px] sm:text-base'>
               <TableRow>
                 <TableCell className='bg-blue-200'>
                   {t('numberOfTicketsPurchasedByZachry')}
