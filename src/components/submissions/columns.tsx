@@ -346,6 +346,10 @@ export const columns: ColumnDef<Submission>[] = [
     },
   },
   {
+    header: 'Children Verification',
+    accessorKey: 'childrenVerification',
+  },
+  {
     header: 'Edit',
     accessorKey: 'edit',
     cell: ({ row }) => {

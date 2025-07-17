@@ -71,6 +71,34 @@ const getPinningStyles = <T extends Submission>(
   };
 };
 
+// Helper function to convert camelCase to Title Case
+const camelCaseToTitleCase = (str: string): string => {
+  return str
+    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/^./, (match) => match.toUpperCase()) // Capitalize first letter
+    .trim();
+};
+
+// Helper function to transform data for CSV export
+const transformDataForCsv = (data: any): Record<string, any> => {
+  // exclude user key
+  const { user, ...rest } = data;
+  const transformed: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(rest)) {
+    const humanReadableKey = camelCaseToTitleCase(key);
+
+    // Convert boolean values to yes/no
+    if (typeof value === 'boolean') {
+      transformed[humanReadableKey] = value ? 'yes' : 'no';
+    } else {
+      transformed[humanReadableKey] = value;
+    }
+  }
+
+  return transformed;
+};
+
 export function DataTable<TData extends Submission, TValue>({
   data,
   columns,
@@ -128,11 +156,58 @@ export function DataTable<TData extends Submission, TValue>({
 
   const exportExcel = (rows: Row<Submission>[]) => {
     const rowData = rows.map((row) => {
-      const { pdfFile, pdfFileName, pdfFileSize, ...exportData } = row.original;
-      return {
-        ...exportData,
-        user: row.original.user?.ein || '',
+      const {
+        park,
+        guest,
+        pendingDependentChildren,
+        additionalChildrenReason,
+        additionalFullTicket,
+        additionalMealTicket,
+        ticketNumber,
+        deductionPeriods,
+        notes,
+        completed,
+      } = row.original;
+
+      const guestTotal = row.original.guest ? 2 : 1;
+
+      const childrenTotal = row.original.childrenVerification
+        ? row.original.pendingDependentChildren
+        : row.original.user?.children || 0;
+
+      const additionalMealTicketTotal = additionalMealTicket;
+
+      const additionalFullTicketTotal = additionalFullTicket;
+
+      const totalTickets =
+        guestTotal +
+        additionalFullTicketTotal +
+        additionalMealTicketTotal +
+        childrenTotal;
+
+      const dataToExport = {
+        firstName: row.original.user?.firstName || '',
+        lastName: row.original.user?.lastName || '',
+        ein: row.original.user?.ein || '',
+        jobNumber: row.original.user?.jobNumber || '',
+        department: row.original.user?.location || '',
+        park,
+        company: row.original.user?.company || '',
+        guest,
+        lastYearChildren: row.original.user?.children || '',
+        requestedChildren: pendingDependentChildren,
+        additionalChildrenReason,
+        totalFullTicket: additionalFullTicketTotal,
+        totalMealTicket: additionalMealTicket,
+        totalTickets,
+        ticketNumber,
+        payrollDeduction: deductionPeriods,
+        notes,
+        completed,
       };
+
+      // Transform data with human-readable headers and yes/no for booleans
+      return transformDataForCsv(dataToExport);
     });
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
