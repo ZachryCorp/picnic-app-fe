@@ -34,7 +34,7 @@ jobs:
           output_location: 'dist'
           ###### End of Repository/Build Configurations ######
         env:
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
