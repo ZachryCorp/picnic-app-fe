@@ -13,7 +13,9 @@ import {
   Column,
 } from '@tanstack/react-table';
 import { mkConfig, generateCsv, download } from 'export-to-csv';
+import JSZip from 'jszip';
 import { Submission } from '@/types';
+import { getSubmissionPdf } from '@/api/submissions';
 
 import {
   Table,
@@ -108,6 +110,7 @@ export function DataTable<TData extends Submission, TValue>({
   ]);
   const [globalFilter, setGlobalFilter] = useState<any>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [isDownloadingPdfs, setIsDownloadingPdfs] = useState(false);
 
   const availableJobNumbers = useMemo(() => {
     const jobNumbers = new Set<string>();
@@ -213,6 +216,69 @@ export function DataTable<TData extends Submission, TValue>({
     download(csvConfig)(csv);
   };
 
+  const bulkDownloadPdfs = async (rows: Row<Submission>[]) => {
+    setIsDownloadingPdfs(true);
+
+    try {
+      const zip = new JSZip();
+      const pdfPromises: Promise<void>[] = [];
+
+      // Filter rows that have PDFs
+      const rowsWithPdfs = rows.filter(
+        (row) => row.original.pdfFileName || row.original.pdfFileSize
+      );
+
+      if (rowsWithPdfs.length === 0) {
+        alert('No PDFs found in the selected submissions.');
+        return;
+      }
+
+      // Add each PDF to the zip
+      rowsWithPdfs.forEach((row, index) => {
+        const promise = getSubmissionPdf(row.original.id.toString())
+          .then((pdfBlob) => {
+            if (pdfBlob) {
+              const fileName =
+                row.original.pdfFileName ||
+                `submission-${row.original.user?.ein || 'unknown'}-${row.original.id}.pdf`;
+              zip.file(fileName, pdfBlob);
+            }
+          })
+          .catch((error) => {
+            console.error(
+              `Failed to download PDF for submission ${row.original.id}:`,
+              error
+            );
+          });
+
+        pdfPromises.push(promise);
+      });
+
+      // Wait for all PDFs to be added to the zip
+      await Promise.all(pdfPromises);
+
+      // Generate and download the zip file
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const today = new Date().toISOString().split('T')[0];
+      const zipFileName = `submissions-pdfs-${today}.zip`;
+
+      // Create download link
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = zipFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error creating PDF zip file:', error);
+      alert('Error occurred while downloading PDFs. Please try again.');
+    } finally {
+      setIsDownloadingPdfs(false);
+    }
+  };
+
   const clearFilters = () => {
     setGlobalFilter('');
     setSorting([]);
@@ -287,9 +353,18 @@ export function DataTable<TData extends Submission, TValue>({
             </Button>
           )}
         </div>
-        <Button onClick={() => exportExcel(table.getFilteredRowModel().rows)}>
-          Generate Report
-        </Button>
+        <div className='flex gap-2'>
+          <Button
+            onClick={() => bulkDownloadPdfs(table.getFilteredRowModel().rows)}
+            disabled={isDownloadingPdfs}
+            variant='outline'
+          >
+            {isDownloadingPdfs ? 'Downloading PDFs...' : 'Download PDFs'}
+          </Button>
+          <Button onClick={() => exportExcel(table.getFilteredRowModel().rows)}>
+            Generate Report
+          </Button>
+        </div>
       </div>
       <div className='rounded-md border overflow-hidden'>
         <div className='overflow-x-auto'>
