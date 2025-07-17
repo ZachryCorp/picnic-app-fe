@@ -57,6 +57,8 @@
   "childrenTickets": "Children Tickets",
   "fullTicket": "Full Ticket (park admission + meal ticket)",
   "mealTicket": "Meal Ticket (for season pass holders)",
+  "fullTicketSmall": "Full Ticket",
+  "mealTicketSmall": "Meal Ticket",
   "typeOfTicket": "Type of Ticket",
   "quantity": "Quantity",
   "price": "Price",

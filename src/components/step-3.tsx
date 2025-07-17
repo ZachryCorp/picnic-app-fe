@@ -93,15 +93,28 @@ export function Step3() {
           <Table className='border'>
             <TableHeader className='bg-emerald-200'>
               <TableRow>
-                <TableHead>{t('typeOfTicket')}</TableHead>
-                <TableHead>{t('quantity')}</TableHead>
-                <TableHead>{t('price')}</TableHead>
-                <TableHead className='text-right'>{t('amountDue')}</TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('typeOfTicket')}
+                </TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('quantity')}
+                </TableHead>
+                <TableHead className='text-xs sm:text-base'>
+                  {t('price')}
+                </TableHead>
+                <TableHead className='text-right text-xs sm:text-base'>
+                  {t('amount')}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>{t('fullTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('fullTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('fullTicketSmall')}
+                </TableCell>
                 <TableCell>
                   <FormField
                     control={form.control}
@@ -130,7 +143,12 @@ export function Step3() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>{t('mealTicket')}</TableCell>
+                <TableCell className='hidden sm:block'>
+                  {t('mealTicket')}
+                </TableCell>
+                <TableCell className='sm:hidden'>
+                  {t('mealTicketSmall')}
+                </TableCell>
                 <TableCell>
                   <FormField
                     control={form.control}
@@ -162,7 +180,7 @@ export function Step3() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell className='font-bold bg-emerald-200'>
+                <TableCell className='font-bold bg-emerald-200 text-[8px] sm:text-base'>
                   {t('totalPurchasedByEmployee')}
                 </TableCell>
                 <TableCell></TableCell>

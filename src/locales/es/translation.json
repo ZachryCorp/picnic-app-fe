@@ -57,6 +57,8 @@
   "childrenTickets": "Entradas de hijos",
   "fullTicket": "Entrada completa (admitación al parque + entrada de almuerzo)",
   "mealTicket": "Entrada de almuerzo (para titulares de temporada)",
+  "fullTicketSmall": "Entrada completa",
+  "mealTicketSmall": "Entrada de almuerzo",
   "typeOfTicket": "Tipo de entrada",
   "quantity": "Cantidad",
   "price": "Precio",
