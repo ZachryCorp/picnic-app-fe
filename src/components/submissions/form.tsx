@@ -9,6 +9,13 @@ import { useForm } from 'react-hook-form';
 import { Checkbox } from '../ui/checkbox';
 import { Textarea } from '../ui/textarea';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -148,12 +155,20 @@ export function SubmissionForm({
           control={form.control}
           name='childrenVerification'
           render={({ field }) => (
-            <FormItem className='flex flex-row items-center gap-2'>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
+            <FormItem>
               <FormLabel>Approve Dependent Children Request</FormLabel>
+              <Select
+                value={field.value ? 'no' : 'yes'}
+                onValueChange={(value) => field.onChange(value === 'no')}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder='Select verification status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='yes'>Yes - Approve Request</SelectItem>
+                  <SelectItem value='no'>No - Deny Request</SelectItem>
+                </SelectContent>
+              </Select>
             </FormItem>
           )}
         />
