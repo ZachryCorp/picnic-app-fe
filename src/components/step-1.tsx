@@ -167,71 +167,95 @@ export function Step1() {
                     onValueChange={field.onChange}
                     defaultValue={field.value ?? ''}
                   >
-                    <FormItem className='w-24 sm:w-auto flex flex-col justify-between items-center gap-2'>
-                      <div className='flex flex-col items-center gap-2'>
-                        <AspectRatio
-                          className='flex items-center justify-center'
-                          ratio={16 / 9}
-                        >
-                          <img
-                            className='object-cover'
-                            src='/img/carowinds.webp'
-                            alt='Carowinds'
+                    <FormItem className='w-24 sm:w-auto'>
+                      <label
+                        htmlFor='carowinds-radio'
+                        className='flex flex-col justify-between items-center gap-2 cursor-pointer'
+                      >
+                        <div className='flex flex-col items-center gap-2'>
+                          <AspectRatio
+                            className='flex items-center justify-center'
+                            ratio={16 / 9}
+                          >
+                            <img
+                              className='object-cover'
+                              src='/img/carowinds.webp'
+                              alt='Carowinds'
+                            />
+                          </AspectRatio>
+                          <FormLabel>Carowinds</FormLabel>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            Charlotte, NC
+                          </p>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            {t('carowindsDate')}
+                          </p>
+                        </div>
+                        <FormControl>
+                          <RadioGroupItem
+                            id='carowinds-radio'
+                            value='Carowinds'
                           />
-                        </AspectRatio>
-                        <FormLabel>Carowinds</FormLabel>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          Charlotte, NC
-                        </p>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          {t('carowindsDate')}
-                        </p>
-                      </div>
-                      <FormControl>
-                        <RadioGroupItem value='Carowinds' />
-                      </FormControl>
+                        </FormControl>
+                      </label>
                     </FormItem>
-                    <FormItem className='w-24 sm:w-auto flex flex-col justify-between items-center gap-2'>
-                      <div className='flex flex-col items-center gap-2'>
-                        <AspectRatio ratio={16 / 9}>
-                          <img
-                            className='object-cover'
-                            src='/img/fiesta-texas.webp'
-                            alt='Fiesta Texas'
+                    <FormItem className='w-24 sm:w-auto'>
+                      <label
+                        htmlFor='fiesta-radio'
+                        className='flex flex-col justify-between items-center gap-2 cursor-pointer'
+                      >
+                        <div className='flex flex-col items-center gap-2'>
+                          <AspectRatio ratio={16 / 9}>
+                            <img
+                              className='object-cover'
+                              src='/img/fiesta-texas.webp'
+                              alt='Fiesta Texas'
+                            />
+                          </AspectRatio>
+                          <FormLabel>Fiesta Texas</FormLabel>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            San Antonio, TX
+                          </p>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            {t('fiestaTexasDate')}
+                          </p>
+                        </div>
+                        <FormControl>
+                          <RadioGroupItem
+                            id='fiesta-radio'
+                            value='Fiesta Texas'
                           />
-                        </AspectRatio>
-                        <FormLabel>Fiesta Texas</FormLabel>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          San Antonio, TX
-                        </p>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          {t('fiestaTexasDate')}
-                        </p>
-                      </div>
-                      <FormControl>
-                        <RadioGroupItem value='Fiesta Texas' />
-                      </FormControl>
+                        </FormControl>
+                      </label>
                     </FormItem>
-                    <FormItem className='w-24 sm:w-auto flex flex-col justify-between items-center gap-2'>
-                      <div className='flex flex-col items-center gap-2'>
-                        <AspectRatio ratio={16 / 9}>
-                          <img
-                            src='/img/six-flags.webp'
-                            alt='Six Flags Over Texas'
-                            className='object-cover'
+                    <FormItem className='w-24 sm:w-auto'>
+                      <label
+                        htmlFor='sixflags-radio'
+                        className='flex flex-col justify-between items-center gap-2 cursor-pointer'
+                      >
+                        <div className='flex flex-col items-center gap-2'>
+                          <AspectRatio ratio={16 / 9}>
+                            <img
+                              src='/img/six-flags.webp'
+                              alt='Six Flags Over Texas'
+                              className='object-cover'
+                            />
+                          </AspectRatio>
+                          <FormLabel>Six Flags Over Texas</FormLabel>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            Arlington, TX
+                          </p>
+                          <p className='text-xs sm:text-sm text-muted-foreground'>
+                            {t('sixFlagsDate')}
+                          </p>
+                        </div>
+                        <FormControl>
+                          <RadioGroupItem
+                            id='sixflags-radio'
+                            value='Six Flags Over Texas'
                           />
-                        </AspectRatio>
-                        <FormLabel>Six Flags Over Texas</FormLabel>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          Arlington, TX
-                        </p>
-                        <p className='text-xs sm:text-sm text-muted-foreground'>
-                          {t('sixFlagsDate')}
-                        </p>
-                      </div>
-                      <FormControl>
-                        <RadioGroupItem value='Six Flags Over Texas' />
-                      </FormControl>
+                        </FormControl>
+                      </label>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
