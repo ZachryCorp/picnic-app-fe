@@ -103,6 +103,19 @@ export function SubmissionForm({
         />
         <FormField
           control={form.control}
+          name='guest'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Guest</FormLabel>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name='additionalFullTicket'
           render={({ field }) => (
             <FormItem>
@@ -117,6 +130,16 @@ export function SubmissionForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Additional Meal Ticket</FormLabel>
+              <Input type='number' {...field} />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='pendingDependentChildren'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Requesting Dependent Children</FormLabel>
               <Input type='number' {...field} />
             </FormItem>
           )}
