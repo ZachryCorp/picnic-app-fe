@@ -270,7 +270,7 @@ export function Step2() {
                   <div className='flex flex-col gap-2'>
                     <p className='text-sm'>{t('childrenVerification')}</p>
                     <p className='max-w-xs sm:max-w-sm text-xs text-muted-foreground'>
-                      <span className='font-bold'>
+                      <span className='font-bold text-destructive'>
                         {t('childrenDisclaimer')}
                       </span>
                     </p>
