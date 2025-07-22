@@ -238,9 +238,7 @@ export function DataTable<TData extends Submission, TValue>({
         const promise = getSubmissionPdf(row.original.id.toString())
           .then((pdfBlob) => {
             if (pdfBlob) {
-              const fileName =
-                row.original.pdfFileName ||
-                `submission-${row.original.user?.ein || 'unknown'}-${row.original.id}.pdf`;
+              const fileName = `submission-${row.original.user?.company || 'unknown'}-${row.original.user?.ein}.pdf`;
               zip.file(fileName, pdfBlob);
             }
           })
