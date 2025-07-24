@@ -127,14 +127,99 @@ export default function PayrollDeductionForm() {
       pdfForm.getTextField('payPeriods').setText(data.payPeriods);
       pdfForm.getTextField('date2').setText(data.date2);
 
-      // 3. Capture & embed signature
+      // 3. Capture & embed signature with enhanced error handling
       const dataUrl = sigCanvasRef.current?.toDataURL();
       if (!dataUrl) {
-        throw new Error('Failed to capture signature');
+        throw new Error('Failed to capture signature: dataURL is empty');
       }
+
+      // Validate that the dataURL actually contains image data
+      if (
+        dataUrl ===
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
+      ) {
+        throw new Error(
+          'Signature canvas appears to be empty - contains only transparent pixel'
+        );
+      }
+
       const imgBytes = await fetch(dataUrl).then((r) => r.arrayBuffer());
       const pngImage = await pdfDoc.embedPng(imgBytes);
-      pdfForm.getTextField('signature').setImage(pngImage);
+
+      // Check if signature field exists and handle it properly
+      try {
+        const signatureField = pdfForm.getTextField('signature');
+
+        // Try to set the image on the form field
+        signatureField.setImage(pngImage);
+
+        // Alternative approach: Also draw the signature directly on the PDF page
+        // This ensures the signature is visible even if the form field doesn't display images properly
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+
+        // Get the signature field's position (if available)
+        const fieldWidgets = signatureField.acroField.getWidgets();
+        if (fieldWidgets.length > 0) {
+          const widget = fieldWidgets[0];
+          const rect = widget.getRectangle();
+
+          // Draw the signature image directly on the page at the field location
+          // Scale the image to fit the field dimensions
+          const imageWidth = Math.min(rect.width, 200); // Max width of 200
+          const imageHeight = Math.min(rect.height, 50); // Max height of 50
+
+          firstPage.drawImage(pngImage, {
+            x: rect.x,
+            y: rect.y,
+            width: imageWidth,
+            height: imageHeight,
+          });
+        } else {
+          // Fallback: Draw signature in a default location if field position can't be determined
+          firstPage.drawImage(pngImage, {
+            x: 400, // Default x position
+            y: 200, // Default y position
+            width: 150,
+            height: 40,
+          });
+        }
+      } catch (fieldError) {
+        console.error('Error setting signature field:', fieldError);
+
+        // Try alternative field names that might be used
+        const alternativeNames = [
+          'Signature',
+          'signature_field',
+          'sig',
+          'employee_signature',
+        ];
+        let signatureSet = false;
+
+        for (const altName of alternativeNames) {
+          try {
+            const altField = pdfForm.getTextField(altName);
+            altField.setImage(pngImage);
+            signatureSet = true;
+            break;
+          } catch (altError) {
+            // Continue to next alternative
+          }
+        }
+
+        if (!signatureSet) {
+          // Final fallback: Draw signature directly on the page without using form fields
+          const pages = pdfDoc.getPages();
+          const firstPage = pages[0];
+
+          firstPage.drawImage(pngImage, {
+            x: 400, // Adjust these coordinates as needed
+            y: 200,
+            width: 150,
+            height: 40,
+          });
+        }
+      }
 
       // 4. Generate PDF and create blob URL
       const pdfBytes = await pdfDoc.save();
@@ -157,7 +242,19 @@ export default function PayrollDeductionForm() {
       }, 100);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      setSignatureError('Failed to generate PDF. Please try again.');
+
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        if (error.message.includes('signature')) {
+          setSignatureError(`Signature error: ${error.message}`);
+        } else if (error.message.includes('field')) {
+          setSignatureError(`PDF field error: ${error.message}`);
+        } else {
+          setSignatureError(`Failed to generate PDF: ${error.message}`);
+        }
+      } else {
+        setSignatureError('Failed to generate PDF. Please try again.');
+      }
     } finally {
       setIsGeneratingPdf(false);
     }
