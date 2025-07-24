@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from "react";
 import {
   ColumnDef,
   SortingState,
@@ -11,11 +11,11 @@ import {
   Row,
   ColumnFiltersState,
   Column,
-} from '@tanstack/react-table';
-import { mkConfig, generateCsv, download } from 'export-to-csv';
-import JSZip from 'jszip';
-import { Submission } from '@/types';
-import { getSubmissionPdf } from '@/api/submissions';
+} from "@tanstack/react-table";
+import { mkConfig, generateCsv, download } from "export-to-csv";
+import JSZip from "jszip";
+import { Submission } from "@/types";
+import { getSubmissionPdf } from "@/api/submissions";
 
 import {
   Table,
@@ -25,12 +25,12 @@ import {
   TableBody,
   TableCell,
   TableFooter,
-} from '../ui/table';
-import { DataTablePagination } from '../data-table/pagination';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { X } from 'lucide-react';
-import { Filters } from './filters';
+} from "../ui/table";
+import { DataTablePagination } from "../data-table/pagination";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { X } from "lucide-react";
+import { Filters } from "./filters";
 
 interface DataTableProps<TData extends Submission, TValue> {
   data: TData[];
@@ -38,37 +38,37 @@ interface DataTableProps<TData extends Submission, TValue> {
 }
 
 const getPinningStyles = <T extends Submission>(
-  column: Column<T>
+  column: Column<T>,
 ): { className: string; style: React.CSSProperties } => {
   const isPinned = column.getIsPinned();
 
-  if (isPinned === 'right') {
+  if (isPinned === "right") {
     return {
-      className: 'sticky z-30 bg-background',
+      className: "sticky z-30 bg-background",
       style: {
         right: 0,
-        borderLeft: '1px solid hsl(var(--border))',
-        boxShadow: '-4px 0 6px -1px rgba(0, 0, 0, 0.1)',
+        borderLeft: "1px solid hsl(var(--border))",
+        boxShadow: "-4px 0 6px -1px rgba(0, 0, 0, 0.1)",
       },
     };
   }
 
-  if (isPinned === 'left') {
-    const isLastLeftColumn = column.getIsLastColumn('left');
+  if (isPinned === "left") {
+    const isLastLeftColumn = column.getIsLastColumn("left");
     return {
-      className: 'sticky z-30 bg-background',
+      className: "sticky z-30 bg-background",
       style: {
-        left: column.getStart('left'),
-        borderRight: isLastLeftColumn ? '1px solid hsl(var(--border))' : 'none',
+        left: column.getStart("left"),
+        borderRight: isLastLeftColumn ? "1px solid hsl(var(--border))" : "none",
         boxShadow: isLastLeftColumn
-          ? '4px 0 6px -1px rgba(0, 0, 0, 0.1)'
-          : 'none',
+          ? "4px 0 6px -1px rgba(0, 0, 0, 0.1)"
+          : "none",
       },
     };
   }
 
   return {
-    className: 'bg-background',
+    className: "bg-background",
     style: {},
   };
 };
@@ -76,7 +76,7 @@ const getPinningStyles = <T extends Submission>(
 // Helper function to convert camelCase to Title Case
 const camelCaseToTitleCase = (str: string): string => {
   return str
-    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/([A-Z])/g, " $1") // Add space before capital letters
     .replace(/^./, (match) => match.toUpperCase()) // Capitalize first letter
     .trim();
 };
@@ -91,8 +91,8 @@ const transformDataForCsv = (data: any): Record<string, any> => {
     const humanReadableKey = camelCaseToTitleCase(key);
 
     // Convert boolean values to yes/no
-    if (typeof value === 'boolean') {
-      transformed[humanReadableKey] = value ? 'yes' : 'no';
+    if (typeof value === "boolean") {
+      transformed[humanReadableKey] = value ? "yes" : "no";
     } else {
       transformed[humanReadableKey] = value;
     }
@@ -106,9 +106,10 @@ export function DataTable<TData extends Submission, TValue>({
   columns,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([
-    { id: 'completed', desc: false },
+    { id: "completed", desc: false },
+    { id: "createdAt", desc: true },
   ]);
-  const [globalFilter, setGlobalFilter] = useState<any>('');
+  const [globalFilter, setGlobalFilter] = useState<any>("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [isDownloadingPdfs, setIsDownloadingPdfs] = useState(false);
 
@@ -129,14 +130,15 @@ export function DataTable<TData extends Submission, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: 'auto',
+    globalFilterFn: "auto",
     initialState: {
       columnPinning: {
-        right: ['edit'],
-        left: ['user_firstName', 'user_lastName', 'user_ein'],
+        right: ["edit"],
+        left: ["user_firstName", "user_lastName", "user_ein"],
       },
       columnVisibility: {
         childrenVerification: false,
+        createdAt: false,
       },
     },
     onSortingChange: setSorting,
@@ -149,11 +151,11 @@ export function DataTable<TData extends Submission, TValue>({
     onGlobalFilterChange: setGlobalFilter,
   });
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
   const csvConfig = mkConfig({
-    fieldSeparator: ',',
+    fieldSeparator: ",",
     filename: `submissions-${today}`,
-    decimalSeparator: '.',
+    decimalSeparator: ".",
     useKeysAsHeaders: true,
   });
 
@@ -189,15 +191,15 @@ export function DataTable<TData extends Submission, TValue>({
         childrenTotal;
 
       const dataToExport = {
-        firstName: row.original.user?.firstName || '',
-        lastName: row.original.user?.lastName || '',
-        ein: row.original.user?.ein || '',
-        jobNumber: row.original.user?.jobNumber || '',
-        department: row.original.user?.location || '',
+        firstName: row.original.user?.firstName || "",
+        lastName: row.original.user?.lastName || "",
+        ein: row.original.user?.ein || "",
+        jobNumber: row.original.user?.jobNumber || "",
+        department: row.original.user?.location || "",
         park,
-        company: row.original.user?.company || '',
+        company: row.original.user?.company || "",
         guest,
-        lastYearChildren: row.original.user?.children || '',
+        lastYearChildren: row.original.user?.children || "",
         requestedChildren: pendingDependentChildren,
         additionalChildrenReason,
         totalFullTicket: additionalFullTicketTotal,
@@ -225,11 +227,11 @@ export function DataTable<TData extends Submission, TValue>({
 
       // Filter rows that have PDFs
       const rowsWithPdfs = rows.filter(
-        (row) => row.original.pdfFileName || row.original.pdfFileSize
+        (row) => row.original.pdfFileName || row.original.pdfFileSize,
       );
 
       if (rowsWithPdfs.length === 0) {
-        alert('No PDFs found in the selected submissions.');
+        alert("No PDFs found in the selected submissions.");
         return;
       }
 
@@ -238,14 +240,14 @@ export function DataTable<TData extends Submission, TValue>({
         const promise = getSubmissionPdf(row.original.id.toString())
           .then((pdfBlob) => {
             if (pdfBlob) {
-              const fileName = `submission-${row.original.user?.company || 'unknown'}-${row.original.user?.ein}.pdf`;
+              const fileName = `submission-${row.original.user?.company || "unknown"}-${row.original.user?.ein}.pdf`;
               zip.file(fileName, pdfBlob);
             }
           })
           .catch((error) => {
             console.error(
               `Failed to download PDF for submission ${row.original.id}:`,
-              error
+              error,
             );
           });
 
@@ -256,13 +258,13 @@ export function DataTable<TData extends Submission, TValue>({
       await Promise.all(pdfPromises);
 
       // Generate and download the zip file
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
-      const today = new Date().toISOString().split('T')[0];
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const today = new Date().toISOString().split("T")[0];
       const zipFileName = `submissions-pdfs-${today}.zip`;
 
       // Create download link
       const url = URL.createObjectURL(zipBlob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = zipFileName;
       document.body.appendChild(link);
@@ -270,103 +272,103 @@ export function DataTable<TData extends Submission, TValue>({
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error creating PDF zip file:', error);
-      alert('Error occurred while downloading PDFs. Please try again.');
+      console.error("Error creating PDF zip file:", error);
+      alert("Error occurred while downloading PDFs. Please try again.");
     } finally {
       setIsDownloadingPdfs(false);
     }
   };
 
   const clearFilters = () => {
-    setGlobalFilter('');
+    setGlobalFilter("");
     setSorting([]);
     setColumnFilters([]);
   };
 
   const selectedParks =
-    (table.getColumn('park')?.getFilterValue() as string[]) || [];
-  const hasGuest = table.getColumn('guest')?.getFilterValue() as boolean | null;
+    (table.getColumn("park")?.getFilterValue() as string[]) || [];
+  const hasGuest = table.getColumn("guest")?.getFilterValue() as boolean | null;
   const hasChildren = table
-    .getColumn('pendingDependentChildren')
+    .getColumn("pendingDependentChildren")
     ?.getFilterValue() as boolean | null;
   const hasPayrollDeduction = table
-    .getColumn('deductionPeriods')
+    .getColumn("deductionPeriods")
     ?.getFilterValue() as boolean | null;
   const selectedJobNumbers =
-    (table.getColumn('jobNumber')?.getFilterValue() as string[]) || [];
+    (table.getColumn("jobNumber")?.getFilterValue() as string[]) || [];
   const hasChildrenVerification = table
-    .getColumn('childrenVerification')
+    .getColumn("childrenVerification")
     ?.getFilterValue() as boolean | null;
-  const hasCompleted = table.getColumn('completed')?.getFilterValue() as
+  const hasCompleted = table.getColumn("completed")?.getFilterValue() as
     | boolean
     | null;
 
   return (
     <div>
-      <div className='flex flex-col justify-between gap-2 md:flex-row md:items-center py-4'>
-        <div className='flex gap-2'>
+      <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center py-4">
+        <div className="flex gap-2">
           <Input
-            placeholder='Search...'
+            placeholder="Search..."
             value={globalFilter}
             onChange={(e) => table.setGlobalFilter(String(e.target.value))}
-            className='max-w-sm min-w-64'
+            className="max-w-sm min-w-64"
           />
           <Filters
             selectedParks={selectedParks}
             onParksChange={(parks) => {
-              table.getColumn('park')?.setFilterValue(parks);
+              table.getColumn("park")?.setFilterValue(parks);
             }}
             hasGuest={hasGuest}
             onGuestChange={(value) => {
-              table.getColumn('guest')?.setFilterValue(value);
+              table.getColumn("guest")?.setFilterValue(value);
             }}
             hasChildren={hasChildren}
             onChildrenChange={(value) => {
               table
-                .getColumn('pendingDependentChildren')
+                .getColumn("pendingDependentChildren")
                 ?.setFilterValue(value);
             }}
             hasPayrollDeduction={hasPayrollDeduction}
             onPayrollDeductionChange={(value) => {
-              table.getColumn('deductionPeriods')?.setFilterValue(value);
+              table.getColumn("deductionPeriods")?.setFilterValue(value);
             }}
             selectedJobNumbers={selectedJobNumbers}
             onJobNumbersChange={(jobNumbers) => {
-              table.getColumn('jobNumber')?.setFilterValue(jobNumbers);
+              table.getColumn("jobNumber")?.setFilterValue(jobNumbers);
             }}
             availableJobNumbers={availableJobNumbers}
             hasChildrenVerification={hasChildrenVerification}
             onChildrenVerificationChange={(value) => {
-              table.getColumn('childrenVerification')?.setFilterValue(value);
+              table.getColumn("childrenVerification")?.setFilterValue(value);
             }}
             hasCompleted={hasCompleted}
             onCompletedChange={(value) => {
-              table.getColumn('completed')?.setFilterValue(value);
+              table.getColumn("completed")?.setFilterValue(value);
             }}
           />
           {(globalFilter || sorting.length > 0 || columnFilters.length > 0) && (
-            <Button variant='outline' size='sm' onClick={clearFilters}>
-              <X className='w-4 h-4' />
+            <Button variant="outline" size="sm" onClick={clearFilters}>
+              <X className="w-4 h-4" />
               Clear Filters
             </Button>
           )}
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Button
             onClick={() => bulkDownloadPdfs(table.getFilteredRowModel().rows)}
             disabled={isDownloadingPdfs}
-            variant='outline'
+            variant="outline"
           >
-            {isDownloadingPdfs ? 'Downloading PDFs...' : 'Download PDFs'}
+            {isDownloadingPdfs ? "Downloading PDFs..." : "Download PDFs"}
           </Button>
           <Button onClick={() => exportExcel(table.getFilteredRowModel().rows)}>
             Generate Report
           </Button>
         </div>
       </div>
-      <div className='rounded-md border overflow-hidden'>
-        <div className='overflow-x-auto'>
-          <Table className='relative'>
+      <div className="rounded-md border overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table className="relative">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
@@ -388,7 +390,7 @@ export function DataTable<TData extends Submission, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -401,8 +403,8 @@ export function DataTable<TData extends Submission, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    className='group'
+                    data-state={row.getIsSelected() && "selected"}
+                    className="group"
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
@@ -420,7 +422,7 @@ export function DataTable<TData extends Submission, TValue>({
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       );
@@ -431,7 +433,7 @@ export function DataTable<TData extends Submission, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className='h-24 text-center'
+                    className="h-24 text-center"
                   >
                     No results.
                   </TableCell>
@@ -448,7 +450,7 @@ export function DataTable<TData extends Submission, TValue>({
                     return (
                       <TableHead
                         key={header.id}
-                        className={`whitespace-nowrap ${pinningStyles.className.replace('bg-background', 'bg-muted')} group-hover:bg-muted/50`}
+                        className={`whitespace-nowrap ${pinningStyles.className.replace("bg-background", "bg-muted")} group-hover:bg-muted/50`}
                         style={{
                           width: header.getSize(),
                           minWidth: header.getSize(),
@@ -459,7 +461,7 @@ export function DataTable<TData extends Submission, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.footer,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );

@@ -1,55 +1,55 @@
-import { ColumnDef } from '@tanstack/react-table';
-import { Submission } from '@/types';
+import { ColumnDef } from "@tanstack/react-table";
+import { Submission } from "@/types";
 import {
   PencilIcon,
   AlertTriangleIcon,
   CircleAlert,
   CircleCheck,
   CircleX,
-} from 'lucide-react';
+} from "lucide-react";
 
-import { DataTableColumnHeader } from '../data-table/column-header';
-import { Button } from '../ui/button';
+import { DataTableColumnHeader } from "../data-table/column-header";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { SubmissionForm } from './form';
-import { PdfViewerModal } from './pdf-viewer-modal';
-import { useState } from 'react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+} from "../ui/dialog";
+import { SubmissionForm } from "./form";
+import { PdfViewerModal } from "./pdf-viewer-modal";
+import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const columns: ColumnDef<Submission>[] = [
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='First Name' />
+      <DataTableColumnHeader column={column} title="First Name" />
     ),
-    accessorKey: 'user.firstName',
-    footer: 'Totals',
+    accessorKey: "user.firstName",
+    footer: "Totals",
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Last Name' />
+      <DataTableColumnHeader column={column} title="Last Name" />
     ),
-    accessorKey: 'user.lastName',
+    accessorKey: "user.lastName",
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='EIN' />
+      <DataTableColumnHeader column={column} title="EIN" />
     ),
-    accessorKey: 'user.ein',
+    accessorKey: "user.ein",
     cell: ({ row }) => {
       const user = row.original.user;
       return (
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           {user ? (
             user.ein
           ) : (
-            <div className='flex items-center gap-2 text-yellow-600'>
-              <AlertTriangleIcon className='w-4 h-4' />
+            <div className="flex items-center gap-2 text-yellow-600">
+              <AlertTriangleIcon className="w-4 h-4" />
               <span>User not found</span>
             </div>
           )}
@@ -59,9 +59,9 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Job No.' />
+      <DataTableColumnHeader column={column} title="Job No." />
     ),
-    id: 'jobNumber',
+    id: "jobNumber",
     accessorFn: (row) => row.user?.jobNumber,
     filterFn: (row, _, value: string[]) => {
       const jobNumber = row.original.user?.jobNumber;
@@ -73,26 +73,26 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Dept/Project/Plant/Hotel' />
+      <DataTableColumnHeader column={column} title="Dept/Project/Plant/Hotel" />
     ),
-    accessorKey: 'user.location',
+    accessorKey: "user.location",
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Park' />
+      <DataTableColumnHeader column={column} title="Park" />
     ),
-    accessorKey: 'park',
+    accessorKey: "park",
     filterFn: (row, _, value: string[]) => {
-      return value.length === 0 || value.includes(row.getValue('park'));
+      return value.length === 0 || value.includes(row.getValue("park"));
     },
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Company' />
+      <DataTableColumnHeader column={column} title="Company" />
     ),
-    accessorKey: 'user.company',
+    accessorKey: "user.company",
     filterFn: (row, _, value: string[]) => {
-      return value.length === 0 || value.includes(row.getValue('user.company'));
+      return value.length === 0 || value.includes(row.getValue("user.company"));
     },
   },
   {
@@ -107,7 +107,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'guest',
+    accessorKey: "guest",
     size: 100,
     cell: ({ row }) => {
       return row.original.guest ? 2 : 1;
@@ -132,7 +132,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'user.children',
+    accessorKey: "user.children",
     size: 120,
   },
   {
@@ -148,7 +148,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'pendingDependentChildren',
+    accessorKey: "pendingDependentChildren",
     size: 100,
     cell: ({ row }) => {
       const user = row.original.user;
@@ -177,7 +177,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'additionalChildrenReason',
+    accessorKey: "additionalChildrenReason",
     cell: ({ row }) => {
       if (
         row.original.additionalChildrenReason &&
@@ -185,18 +185,18 @@ export const columns: ColumnDef<Submission>[] = [
       ) {
         return (
           <Tooltip>
-            <TooltipTrigger className='w-4' asChild>
-              <span className='truncate'>
+            <TooltipTrigger className="w-4" asChild>
+              <span className="truncate">
                 {row.original.additionalChildrenReason.slice(0, 32)}
               </span>
             </TooltipTrigger>
-            <TooltipContent className='max-w-xs'>
+            <TooltipContent className="max-w-xs">
               {row.original.additionalChildrenReason}
             </TooltipContent>
           </Tooltip>
         );
       }
-      return row.original.additionalChildrenReason || '-';
+      return row.original.additionalChildrenReason || "-";
     },
   },
   {
@@ -212,7 +212,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'additionalFullTicket',
+    accessorKey: "additionalFullTicket",
     size: 100,
     enableResizing: true,
     cell: ({ row }) => {
@@ -239,12 +239,12 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'additionalMealTicket',
+    accessorKey: "additionalMealTicket",
     size: 100,
     enableResizing: true,
   },
   {
-    header: 'Total Tickets',
+    header: "Total Tickets",
     size: 110,
     cell: ({ row }) => {
       const guest = row.original.guest ? 2 : 1;
@@ -258,7 +258,7 @@ export const columns: ColumnDef<Submission>[] = [
         guest + additionalFullTicket + additionalMealTicket + children;
       return totalTickets;
     },
-    aggregationFn: 'sum',
+    aggregationFn: "sum",
     footer: ({ table }) => {
       const rows = table.getFilteredRowModel().rows;
 
@@ -279,9 +279,9 @@ export const columns: ColumnDef<Submission>[] = [
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Ticket Number' />
+      <DataTableColumnHeader column={column} title="Ticket Number" />
     ),
-    accessorKey: 'ticketNumber',
+    accessorKey: "ticketNumber",
   },
   {
     header: ({ column }) => (
@@ -296,7 +296,7 @@ export const columns: ColumnDef<Submission>[] = [
         }
       />
     ),
-    accessorKey: 'deductionPeriods',
+    accessorKey: "deductionPeriods",
     size: 110,
     filterFn: (row, _, value: boolean | null) => {
       if (value === null) return true;
@@ -304,24 +304,24 @@ export const columns: ColumnDef<Submission>[] = [
     },
   },
   {
-    header: 'PDF',
-    accessorKey: 'pdf',
+    header: "PDF",
+    accessorKey: "pdf",
     cell: ({ row }) => {
       return <PdfViewerModal submission={row.original} />;
     },
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Notes' />
+      <DataTableColumnHeader column={column} title="Notes" />
     ),
-    accessorKey: 'notes',
+    accessorKey: "notes",
     cell: ({ row }) => {
       // if notes is a long string, truncate it and add a tooltip
       if (row.original.notes.length > 32) {
         return (
           <Tooltip>
-            <TooltipTrigger className='w-4' asChild>
-              <span className='truncate'>
+            <TooltipTrigger className="w-4" asChild>
+              <span className="truncate">
                 {row.original.notes.slice(0, 32)}
               </span>
             </TooltipTrigger>
@@ -329,29 +329,38 @@ export const columns: ColumnDef<Submission>[] = [
           </Tooltip>
         );
       }
-      return row.original.notes || '-';
+      return row.original.notes || "-";
     },
   },
   {
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Completed' />
+      <DataTableColumnHeader column={column} title="Completed" />
     ),
-    accessorKey: 'completed',
+    accessorKey: "completed",
     cell: ({ row }) => {
       return row.original.completed ? (
-        <CircleCheck className='w-4 h-4 text-success' />
+        <CircleCheck className="w-4 h-4 text-success" />
       ) : (
-        <CircleX className='w-4 h-4 text-destructive' />
+        <CircleX className="w-4 h-4 text-destructive" />
       );
     },
   },
   {
-    header: 'Children Verification',
-    accessorKey: 'childrenVerification',
+    header: "Children Verification",
+    accessorKey: "childrenVerification",
   },
   {
-    header: 'Edit',
-    accessorKey: 'edit',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={"Created At"} />
+    ),
+    accessorKey: "createdAt",
+    cell: ({ row }) => {
+      return row.original.createdAt;
+    },
+  },
+  {
+    header: "Edit",
+    accessorKey: "edit",
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       const closeModal = () => setOpen(false);
@@ -359,14 +368,14 @@ export const columns: ColumnDef<Submission>[] = [
       return (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <div className='flex items-center gap-2'>
-              <Button className='cursor-pointer' size='icon' variant='ghost'>
-                <PencilIcon className='w-4 h-4' />
+            <div className="flex items-center gap-2">
+              <Button className="cursor-pointer" size="icon" variant="ghost">
+                <PencilIcon className="w-4 h-4" />
               </Button>
               <Tooltip>
                 <TooltipTrigger asChild>
                   {row.original.childrenVerification && (
-                    <CircleAlert className='w-4 h-4 text-destructive' />
+                    <CircleAlert className="w-4 h-4 text-destructive" />
                   )}
                 </TooltipTrigger>
                 <TooltipContent>
