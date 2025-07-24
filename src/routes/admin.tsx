@@ -26,7 +26,8 @@ function RouteComponent() {
     <main className="flex flex-col py-8 container mx-auto justify-center space-y-8">
       <h1 className="text-2xl font-bold">Admin</h1>
 
-      {!session?.user ? <SignIn /> : <SubmissionTableWrapper />}
+      {/* TODO: add bang to flip logic once better auth cross site bug is fixed */}
+      {session?.user ? <SignIn /> : <SubmissionTableWrapper />}
     </main>
   );
 }

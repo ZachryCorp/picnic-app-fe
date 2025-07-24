@@ -1,10 +1,6 @@
 {
   "routes": [
     {
-      "route": "/api/*",
-      "rewrite": "https://ambitious-bush-0fa057d10.2.azurestaticapps.net/api/*"
-    },
-    {
       "route": "/admin"
     },
     {
