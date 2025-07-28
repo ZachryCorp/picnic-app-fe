@@ -1,4 +1,4 @@
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 import {
   FormControl,
   FormDescription,
@@ -6,17 +6,17 @@ import {
   FormItem,
   FormLabel,
   Form,
-} from './ui/form';
-import { Input } from './ui/input';
-import { loadPDFLib } from '@/lib/pdf-utils';
+} from "./ui/form";
+import { Input } from "./ui/input";
+import { loadPDFLib } from "@/lib/pdf-utils";
 
 import {
   sendDependentChildrenVerificationEmail,
   sendOrderConfirmationEmail,
-} from '@/api/email';
-import { useNavigate } from '@tanstack/react-router';
-import { useForm } from 'react-hook-form';
-import { step4Schema } from '@/schema';
+} from "@/api/email";
+import { useNavigate } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { step4Schema } from "@/schema";
 import {
   Table,
   TableHead,
@@ -25,16 +25,16 @@ import {
   TableBody,
   TableCell,
   TableFooter,
-} from './ui/table';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFormStepper } from '@/hooks/form';
-import { ProvidedTicketsTable } from './provided-tickets-table';
-import { useTranslation } from 'react-i18next';
-import { useMutation } from '@tanstack/react-query';
-import { createSubmission } from '@/api/submissions';
-import { getMealTicketPrice, getTicketPrice } from '@/lib/utils';
-import { ArrowLeftIcon } from 'lucide-react';
+} from "./ui/table";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormStepper } from "@/hooks/form";
+import { ProvidedTicketsTable } from "./provided-tickets-table";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "@tanstack/react-query";
+import { createSubmission } from "@/api/submissions";
+import { getMealTicketPrice, getTicketPrice } from "@/lib/utils";
+import { ArrowLeftIcon } from "lucide-react";
 
 type Step4Values = z.infer<typeof step4Schema>;
 
@@ -62,12 +62,12 @@ export function Step4() {
   const mealTicketPrice = getMealTicketPrice(park) ?? 0;
 
   const totalGuestTickets = user.guest ? 1 : 0;
-  const totalChildrenTickets = user.children ? user.children : 0;
+  const totalChildrenTickets = additionalChildren;
 
   const form = useForm<Step4Values>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -101,7 +101,7 @@ export function Step4() {
       rows: string[][],
       columnWidths: number[],
       headerBgColor = rgb(0.9, 0.9, 0.9),
-      footerRows: number[] = []
+      footerRows: number[] = [],
     ) => {
       const cellHeight = lineHeight * 1.4;
       const tableWidth = columnWidths.reduce((a, b) => a + b, 0);
@@ -165,31 +165,31 @@ export function Step4() {
     };
 
     // Title and header
-    addText(t('orderSummary'), width / 2 - 60, y, {
+    addText(t("orderSummary"), width / 2 - 60, y, {
       size: 20,
       color: rgb(0.1, 0.1, 0.1),
     });
     y -= lineHeight * 2.5;
 
     // Employee information
-    addText(`Employee: ${user.firstName || ''} ${user.lastName}`, 50, y, {
+    addText(`Employee: ${user.firstName || ""} ${user.lastName}`, 50, y, {
       size: 14,
     });
     y -= lineHeight;
     addText(`Employee ID: ${user.ein}`, 50, y);
     y -= lineHeight;
-    addText(`${t('park')}: ${park}`, 50, y);
+    addText(`${t("park")}: ${park}`, 50, y);
     y -= lineHeight * 2;
 
     // Park Information
-    addText(t('parkInformation'), 50, y, {
+    addText(t("parkInformation"), 50, y, {
       size: 10,
     });
     y -= lineHeight * 2;
 
     // Children verification warning
     if (childrenVerification) {
-      addText('*** DEPENDENT CHILDREN VERIFICATION REQUIRED ***', 50, y, {
+      addText("*** DEPENDENT CHILDREN VERIFICATION REQUIRED ***", 50, y, {
         size: 12,
         color: rgb(0.8, 0.2, 0.2),
       });
@@ -197,52 +197,52 @@ export function Step4() {
     }
 
     // Section A
-    addText(`${t('section')} A - ${t('fromZachryCorp')}`, 50, y, {
+    addText(`${t("section")} A - ${t("fromZachryCorp")}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
     y -= lineHeight * 1.5;
 
     const sectionATable = [
-      [t('typeOfTicket'), t('quantity')],
-      [t('employeeTickets'), '1'],
-      [t('guestTickets'), totalGuestTickets.toString()],
-      [t('childrenTickets'), totalChildrenTickets.toString()],
+      [t("typeOfTicket"), t("quantity")],
+      [t("employeeTickets"), "1"],
+      [t("guestTickets"), totalGuestTickets.toString()],
+      [t("childrenTickets"), totalChildrenTickets.toString()],
     ];
     const sectionAHeight = drawTable(
       50,
       y,
       sectionATable,
       [320, 80],
-      rgb(0.8, 0.95, 0.8)
+      rgb(0.8, 0.95, 0.8),
     );
     y -= sectionAHeight + lineHeight * 2;
 
     // Section B
-    addText(`${t('section')} B - ${t('employeePurchase')}`, 50, y, {
+    addText(`${t("section")} B - ${t("employeePurchase")}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
     y -= lineHeight * 1.5;
 
     const sectionBTable = [
-      [t('typeOfTicket'), t('quantity'), t('price'), t('amountDue')],
+      [t("typeOfTicket"), t("quantity"), t("price"), t("amountDue")],
       [
-        t('fullTicket'),
+        t("fullTicket"),
         fullTicketCount.toString(),
         `$${ticketPrice.toFixed(2)}`,
         `$${(fullTicketCount * ticketPrice).toFixed(2)}`,
       ],
       [
-        t('mealTicket'),
+        t("mealTicket"),
         mealTicketCount.toString(),
         `$${mealTicketPrice.toFixed(2)}`,
         `$${(mealTicketCount * mealTicketPrice).toFixed(2)}`,
       ],
       [
-        t('totalPurchasedByEmployee'),
-        '',
-        '',
+        t("totalPurchasedByEmployee"),
+        "",
+        "",
         `$${payrollDeductionAmount.toFixed(2)}`,
       ],
     ];
@@ -252,12 +252,12 @@ export function Step4() {
       sectionBTable,
       [220, 60, 60, 100],
       rgb(0.8, 0.95, 0.8),
-      [3] // Footer row
+      [3], // Footer row
     );
     y -= sectionBHeight + lineHeight * 2;
 
     // Section C
-    addText(`${t('section')} C - ${t('summary')}`, 50, y, {
+    addText(`${t("section")} C - ${t("summary")}`, 50, y, {
       size: 16,
       color: rgb(0.2, 0.4, 0.2),
     });
@@ -268,13 +268,13 @@ export function Step4() {
     const totalTicketsOrdered = totalTicketsZachry + totalTicketsEmployee;
 
     const sectionCTable = [
-      [t('description'), t('quantity')],
-      [t('numberOfTicketsPurchasedByZachry'), totalTicketsZachry.toString()],
+      [t("description"), t("quantity")],
+      [t("numberOfTicketsPurchasedByZachry"), totalTicketsZachry.toString()],
       [
-        t('numberOfTicketsPurchasedByEmployee'),
+        t("numberOfTicketsPurchasedByEmployee"),
         totalTicketsEmployee.toString(),
       ],
-      [t('totalNumberOfTicketsOrdered'), totalTicketsOrdered.toString()],
+      [t("totalNumberOfTicketsOrdered"), totalTicketsOrdered.toString()],
     ];
     const sectionCHeight = drawTable(
       50,
@@ -282,13 +282,13 @@ export function Step4() {
       sectionCTable,
       [360, 80],
       rgb(0.9, 0.9, 0.95),
-      [3] // Footer row
+      [3], // Footer row
     );
     y -= sectionCHeight + lineHeight * 2;
 
     // Payroll deduction info
     if (payrollDeductionAmount > 0 && deductionPeriods > 0) {
-      addText('Payroll Deduction Information:', 50, y, { size: 14 });
+      addText("Payroll Deduction Information:", 50, y, { size: 14 });
       y -= lineHeight;
       addText(`Total Amount: $${payrollDeductionAmount.toFixed(2)}`, 50, y);
       y -= lineHeight;
@@ -297,7 +297,7 @@ export function Step4() {
       addText(
         `Amount per Period: $${(payrollDeductionAmount / deductionPeriods).toFixed(2)}`,
         50,
-        y
+        y,
       );
     }
 
@@ -307,18 +307,18 @@ export function Step4() {
       size: 10,
       color: rgb(0.5, 0.5, 0.5),
     });
-    addText('Zachry Corporation', width - 150, footerY, {
+    addText("Zachry Corporation", width - 150, footerY, {
       size: 10,
       color: rgb(0.5, 0.5, 0.5),
     });
 
     // Save the PDF
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
 
     // Open PDF in new window for printing
-    const printWindow = window.open(url, '_blank');
+    const printWindow = window.open(url, "_blank");
     if (printWindow) {
       printWindow.onload = () => {
         printWindow.print();
@@ -350,10 +350,10 @@ export function Step4() {
 
     create(submissionData);
 
-    if (data.email && data.email.trim() !== '') {
+    if (data.email && data.email.trim() !== "") {
       // Prepare order data for email template
       const orderData = {
-        firstName: user.firstName || '',
+        firstName: user.firstName || "",
         lastName: user.lastName,
         ein: user.ein,
         location: user.location,
@@ -384,108 +384,109 @@ export function Step4() {
         data.email,
         orderData,
         pdfData || undefined,
-        pdfFileName || undefined
+        pdfFileName || undefined,
       );
     }
-    navigate({ to: '/confirmation' });
+    navigate({ to: "/confirmation" });
   };
 
   return (
-    <div className='flex flex-col gap-8 pb-4'>
-      <div className='flex flex-col gap-2'>
-        <h2 className='text-2xl font-bold text-center'>
-          {t('section')} A - {t('fromZachryCorp')}
+    <div className="flex flex-col gap-8 pb-4">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-2xl font-bold text-center">
+          {t("section")} A - {t("fromZachryCorp")}
         </h2>
         {childrenVerification && (
-          <p className='text-sm text-center text-destructive'>
-            {t('dependentChildrenVerification')}
+          <p className="text-sm text-center text-destructive">
+            {t("dependentChildrenVerification")}
           </p>
         )}
       </div>
       <ProvidedTicketsTable
         guestTickets={totalGuestTickets}
         childrenTickets={totalChildrenTickets}
+        lastYearChildrenTickets={user?.children ? user.children : 0}
       />
       <Form {...form}>
-        <h2 className='text-2xl font-bold text-center'>
-          {t('section')} B - {t('employeePurchase')}
+        <h2 className="text-2xl font-bold text-center">
+          {t("section")} B - {t("employeePurchase")}
         </h2>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-          <Table className='border text-[9px] sm:text-base'>
-            <TableHeader className='bg-emerald-200'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Table className="border text-[9px] sm:text-base">
+            <TableHeader className="bg-emerald-200">
               <TableRow>
-                <TableHead>{t('typeOfTicket')}</TableHead>
-                <TableHead>{t('quantity')}</TableHead>
-                <TableHead>{t('price')}</TableHead>
-                <TableHead className='text-right'>{t('amount')}</TableHead>
+                <TableHead>{t("typeOfTicket")}</TableHead>
+                <TableHead>{t("quantity")}</TableHead>
+                <TableHead>{t("price")}</TableHead>
+                <TableHead className="text-right">{t("amount")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell className='hidden sm:block'>
-                  {t('fullTicket')}
+                <TableCell className="hidden sm:block">
+                  {t("fullTicket")}
                 </TableCell>
-                <TableCell className='sm:hidden'>
-                  {t('fullTicketSmall')}
+                <TableCell className="sm:hidden">
+                  {t("fullTicketSmall")}
                 </TableCell>
                 <TableCell>{fullTicketCount}</TableCell>
                 <TableCell>${ticketPrice}</TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   ${(fullTicketCount * ticketPrice).toFixed(2)}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className='hidden sm:block'>
-                  {t('mealTicket')}
+                <TableCell className="hidden sm:block">
+                  {t("mealTicket")}
                 </TableCell>
-                <TableCell className='sm:hidden'>
-                  {t('mealTicketSmall')}
+                <TableCell className="sm:hidden">
+                  {t("mealTicketSmall")}
                 </TableCell>
                 <TableCell>{mealTicketCount}</TableCell>
                 <TableCell>${mealTicketPrice}</TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   ${(mealTicketCount * mealTicketPrice).toFixed(2)}
                 </TableCell>
               </TableRow>
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell className='font-bold bg-emerald-200 text-[9px] sm:text-base'>
-                  {t('totalPurchasedByEmployee')}
+                <TableCell className="font-bold bg-emerald-200 text-[9px] sm:text-base">
+                  {t("totalPurchasedByEmployee")}
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   ${payrollDeductionAmount.toFixed(2)}
                 </TableCell>
               </TableRow>
             </TableFooter>
           </Table>
 
-          <h2 className='text-2xl font-bold text-center'>{t('section')} C</h2>
-          <Table className='border'>
-            <TableBody className='text-[8px] sm:text-base'>
+          <h2 className="text-2xl font-bold text-center">{t("section")} C</h2>
+          <Table className="border">
+            <TableBody className="text-[8px] sm:text-base">
               <TableRow>
-                <TableCell className='bg-blue-200'>
-                  {t('numberOfTicketsPurchasedByZachry')}
+                <TableCell className="bg-blue-200">
+                  {t("numberOfTicketsPurchasedByZachry")}
                 </TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   {1 + totalGuestTickets + totalChildrenTickets}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className='bg-emerald-200'>
-                  {t('numberOfTicketsPurchasedByEmployee')}
+                <TableCell className="bg-emerald-200">
+                  {t("numberOfTicketsPurchasedByEmployee")}
                 </TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   {fullTicketCount + mealTicketCount}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className='font-bold'>
-                  {t('totalNumberOfTicketsOrdered')}
+                <TableCell className="font-bold">
+                  {t("totalNumberOfTicketsOrdered")}
                 </TableCell>
-                <TableCell className='text-right'>
+                <TableCell className="text-right">
                   {
                     1 + // Employee ticket
                       totalGuestTickets + // Guest ticket
@@ -499,40 +500,40 @@ export function Step4() {
           </Table>
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('email')}</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
-                    className='w-96'
-                    placeholder={t('email')}
-                    type='email'
+                    className="w-96"
+                    placeholder={t("email")}
+                    type="email"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  {t('enterYourEmailToRecieveACopyOfThisOrder')}
+                  {t("enterYourEmailToRecieveACopyOfThisOrder")}
                 </FormDescription>
               </FormItem>
             )}
           />
-          <div className='flex justify-between gap-2'>
+          <div className="flex justify-between gap-2">
             <Button
-              variant='ghost'
-              type='button'
+              variant="ghost"
+              type="button"
               onClick={() => {
                 decrementCurrentStep();
               }}
             >
-              <ArrowLeftIcon className='w-4 h-4' />
-              {t('back')}
+              <ArrowLeftIcon className="w-4 h-4" />
+              {t("back")}
             </Button>
-            <div className='flex gap-2'>
-              <Button type='button' variant='outline' onClick={handlePrint}>
-                {t('print')}
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={handlePrint}>
+                {t("print")}
               </Button>
-              <Button type='submit'>{t('submit')}</Button>
+              <Button type="submit">{t("submit")}</Button>
             </div>
           </div>
         </form>
