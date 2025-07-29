@@ -413,7 +413,7 @@ export function DataTable<TData extends Submission, TValue>({
                       return (
                         <TableCell
                           key={cell.id}
-                          className={`whitespace-nowrap ${pinningStyles.className} group-hover:bg-muted/50`}
+                          className={`whitespace-nowrap ${pinningStyles.className}`}
                           style={{
                             width: cell.column.getSize(),
                             minWidth: cell.column.getSize(),

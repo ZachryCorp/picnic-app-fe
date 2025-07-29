@@ -21,6 +21,9 @@ export function ProvidedTicketsTable({
   const totalTickets = guestTickets + childrenTickets + 1;
   const { t } = useTranslation();
 
+  const showLastYearChildren =
+    lastYearChildrenTickets !== childrenTickets && childrenTickets > 0;
+
   return (
     <Table className="border text-[9px] sm:text-base">
       <TableHeader className="bg-blue-200">
@@ -43,19 +46,22 @@ export function ProvidedTicketsTable({
           </TableCell>
           <TableCell className="text-right">{guestTickets}</TableCell>
         </TableRow>
-        <TableRow>
-          <TableCell>{t("lastYearChildren")}</TableCell>
-          <TableCell className="text-right">
-            {lastYearChildrenTickets}
-          </TableCell>
-        </TableRow>
+        {showLastYearChildren && (
+          <TableRow>
+            <TableCell>{t("lastYearChildren")}</TableCell>
+            <TableCell className="text-right">
+              {lastYearChildrenTickets}
+            </TableCell>
+          </TableRow>
+        )}
         <TableRow>
           <TableCell>
             {t("children")}
-            &nbsp;
-            <span className="text-xs text-destructive">
-              ({t("dependentChildrenVerification")})
-            </span>
+            {showLastYearChildren && (
+              <span className="text-xs text-destructive">
+                &nbsp; ({t("dependentChildrenVerification")})
+              </span>
+            )}
           </TableCell>
           <TableCell className="text-right">{childrenTickets}</TableCell>
         </TableRow>
