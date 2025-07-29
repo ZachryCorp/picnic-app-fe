@@ -20,6 +20,7 @@ import { z } from 'zod';
 import { authenticateUser } from '@/api/users';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
+import { Submission } from '@/types';
 
 type Step1Values = z.infer<typeof step1Schema>;
 
@@ -69,7 +70,11 @@ export function Step1() {
         return;
       }
 
-      if (result.submissions.length > 0) {
+      if (
+        result.submissions.filter(
+          (submission: Submission) => submission.deletedAt === null
+        ).length > 0
+      ) {
         setAuthError(t('userAlreadySubmitted'));
         return;
       }
