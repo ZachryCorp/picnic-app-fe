@@ -20,15 +20,14 @@ export function SignIn({ className, ...props }: React.ComponentProps<"div">) {
       return;
     }
 
-    const { data, error } = await signIn.email({
+    const { error } = await signIn.email({
       email,
       password,
     });
 
     if (error) {
-      console.error(error);
+      console.error(Object.keys(error));
     }
-    console.log(data);
   };
 
   return (
