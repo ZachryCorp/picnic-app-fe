@@ -294,8 +294,6 @@ export function DataTable<TData extends Submission, TValue>({
   const hasPayrollDeduction = table
     .getColumn("deductionPeriods")
     ?.getFilterValue() as boolean | null;
-  const selectedJobNumbers =
-    (table.getColumn("jobNumber")?.getFilterValue() as string[]) || [];
   const hasChildrenVerification = table
     .getColumn("childrenVerification")
     ?.getFilterValue() as boolean | null;
@@ -332,10 +330,6 @@ export function DataTable<TData extends Submission, TValue>({
             onPayrollDeductionChange={(value) => {
               table.getColumn("deductionPeriods")?.setFilterValue(value);
             }}
-            selectedJobNumbers={selectedJobNumbers}
-            onJobNumbersChange={(jobNumbers) => {
-              table.getColumn("jobNumber")?.setFilterValue(jobNumbers);
-            }}
             availableJobNumbers={availableJobNumbers}
             hasChildrenVerification={hasChildrenVerification}
             onChildrenVerificationChange={(value) => {
@@ -349,7 +343,7 @@ export function DataTable<TData extends Submission, TValue>({
           {(globalFilter || sorting.length > 0 || columnFilters.length > 0) && (
             <Button variant="outline" size="sm" onClick={clearFilters}>
               <X className="w-4 h-4" />
-              Clear Filters
+              Clear Filters & Sorting
             </Button>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { Button } from '../ui/button';
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -7,10 +7,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { Filter } from 'lucide-react';
+} from "../ui/dropdown-menu";
+import { Filter } from "lucide-react";
 
-const PARKS = ['Carowinds', 'Six Flags Over Texas', 'Fiesta Texas'] as const;
+const PARKS = ["Carowinds", "Six Flags Over Texas", "Fiesta Texas"] as const;
 
 interface FiltersProps {
   selectedParks: string[];
@@ -21,8 +21,6 @@ interface FiltersProps {
   onChildrenChange: (value: boolean | null) => void;
   hasPayrollDeduction: boolean | null;
   onPayrollDeductionChange: (value: boolean | null) => void;
-  selectedJobNumbers: string[];
-  onJobNumbersChange: (jobNumbers: string[]) => void;
   availableJobNumbers: string[];
   hasChildrenVerification: boolean | null;
   onChildrenVerificationChange: (value: boolean | null) => void;
@@ -39,9 +37,6 @@ export function Filters({
   onChildrenChange,
   hasPayrollDeduction,
   onPayrollDeductionChange,
-  selectedJobNumbers,
-  onJobNumbersChange,
-  availableJobNumbers,
   hasChildrenVerification,
   onChildrenVerificationChange,
   hasCompleted,
@@ -55,14 +50,6 @@ export function Filters({
     }
   };
 
-  const handleJobNumberToggle = (jobNumber: string) => {
-    if (selectedJobNumbers.includes(jobNumber)) {
-      onJobNumbersChange(selectedJobNumbers.filter((j) => j !== jobNumber));
-    } else {
-      onJobNumbersChange([...selectedJobNumbers, jobNumber]);
-    }
-  };
-
   const totalActiveFilters =
     selectedParks.length +
     (hasGuest === true || hasGuest === false ? 1 : 0) +
@@ -71,22 +58,22 @@ export function Filters({
     (hasChildrenVerification === true || hasChildrenVerification === false
       ? 1
       : 0) +
-    selectedJobNumbers.length;
+    (hasCompleted === true || hasCompleted === false ? 1 : 0);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='sm' className='border-dashed'>
-          <Filter className='mr-2 h-4 w-4' />
+        <Button variant="outline" size="sm" className="border-dashed">
+          <Filter className="mr-2 h-4 w-4" />
           Filters
           {totalActiveFilters > 0 && (
-            <span className='ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground'>
+            <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
               {totalActiveFilters}
             </span>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='start' className='w-[250px]'>
+      <DropdownMenuContent align="start" className="w-[250px]">
         <DropdownMenuLabel>Parks</DropdownMenuLabel>
         <DropdownMenuGroup>
           {PARKS.map((park) => (
@@ -149,7 +136,7 @@ export function Filters({
             checked={hasPayrollDeduction === true}
             onCheckedChange={() =>
               onPayrollDeductionChange(
-                hasPayrollDeduction === true ? null : true
+                hasPayrollDeduction === true ? null : true,
               )
             }
           >
@@ -159,7 +146,7 @@ export function Filters({
             checked={hasPayrollDeduction === false}
             onCheckedChange={() =>
               onPayrollDeductionChange(
-                hasPayrollDeduction === false ? null : false
+                hasPayrollDeduction === false ? null : false,
               )
             }
           >
@@ -171,44 +158,27 @@ export function Filters({
         <DropdownMenuLabel>Children Verification</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuCheckboxItem
-            checked={hasChildrenVerification === true}
+            checked={hasChildrenVerification === false}
             onCheckedChange={() =>
               onChildrenVerificationChange(
-                hasChildrenVerification === true ? null : true
+                hasChildrenVerification === false ? null : false,
               )
             }
           >
             Verified
           </DropdownMenuCheckboxItem>
+
           <DropdownMenuCheckboxItem
-            checked={hasChildrenVerification === false}
+            checked={hasChildrenVerification === true}
             onCheckedChange={() =>
               onChildrenVerificationChange(
-                hasChildrenVerification === false ? null : false
+                hasChildrenVerification === true ? null : true,
               )
             }
           >
             Not Verified
           </DropdownMenuCheckboxItem>
         </DropdownMenuGroup>
-
-        {availableJobNumbers.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Job Numbers</DropdownMenuLabel>
-            <DropdownMenuGroup>
-              {availableJobNumbers.map((jobNumber) => (
-                <DropdownMenuCheckboxItem
-                  key={jobNumber}
-                  checked={selectedJobNumbers.includes(jobNumber)}
-                  onCheckedChange={() => handleJobNumberToggle(jobNumber)}
-                >
-                  {jobNumber}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuGroup>
-          </>
-        )}
 
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Completed</DropdownMenuLabel>
