@@ -113,16 +113,6 @@ export function DataTable<TData extends Submission, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [isDownloadingPdfs, setIsDownloadingPdfs] = useState(false);
 
-  const availableJobNumbers = useMemo(() => {
-    const jobNumbers = new Set<string>();
-    data.forEach((submission) => {
-      if (submission.user?.jobNumber) {
-        jobNumbers.add(submission.user.jobNumber);
-      }
-    });
-    return Array.from(jobNumbers).sort();
-  }, [data]);
-
   const table = useReactTable({
     data,
     columns,
@@ -330,7 +320,6 @@ export function DataTable<TData extends Submission, TValue>({
             onPayrollDeductionChange={(value) => {
               table.getColumn("deductionPeriods")?.setFilterValue(value);
             }}
-            availableJobNumbers={availableJobNumbers}
             hasChildrenVerification={hasChildrenVerification}
             onChildrenVerificationChange={(value) => {
               table.getColumn("childrenVerification")?.setFilterValue(value);

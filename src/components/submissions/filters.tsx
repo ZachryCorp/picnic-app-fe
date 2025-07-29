@@ -21,7 +21,6 @@ interface FiltersProps {
   onChildrenChange: (value: boolean | null) => void;
   hasPayrollDeduction: boolean | null;
   onPayrollDeductionChange: (value: boolean | null) => void;
-  availableJobNumbers: string[];
   hasChildrenVerification: boolean | null;
   onChildrenVerificationChange: (value: boolean | null) => void;
   hasCompleted: boolean | null;
