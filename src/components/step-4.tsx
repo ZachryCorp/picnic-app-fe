@@ -374,6 +374,7 @@ export function Step4() {
         deductionPeriods,
         hasPayrollDeduction: !!payrollDeductionAmount,
         childrenVerification,
+        lastYearChildrenTickets: user?.children,
       };
 
       if (childrenVerification) {
