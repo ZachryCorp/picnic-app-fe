@@ -129,6 +129,7 @@ export function DataTable<TData extends Submission, TValue>({
       columnVisibility: {
         childrenVerification: false,
         createdAt: false,
+        deletedAt: false,
       },
     },
     onSortingChange: setSorting,
@@ -290,6 +291,9 @@ export function DataTable<TData extends Submission, TValue>({
   const hasCompleted = table.getColumn("completed")?.getFilterValue() as
     | boolean
     | null;
+  const isSoftDeleted = table.getColumn("deletedAt")?.getFilterValue() as
+    | boolean
+    | null;
 
   return (
     <div>
@@ -327,6 +331,10 @@ export function DataTable<TData extends Submission, TValue>({
             hasCompleted={hasCompleted}
             onCompletedChange={(value) => {
               table.getColumn("completed")?.setFilterValue(value);
+            }}
+            isSoftDeleted={isSoftDeleted}
+            onSoftDeleteChange={(value) => {
+              table.getColumn("deletedAt")?.setFilterValue(value);
             }}
           />
           {(globalFilter || sorting.length > 0 || columnFilters.length > 0) && (
@@ -387,7 +395,7 @@ export function DataTable<TData extends Submission, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="group"
+                    className={`group ${row.original.deletedAt ? "text-slate-400" : ""}`}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;

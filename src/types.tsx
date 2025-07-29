@@ -28,14 +28,14 @@ export type Submission = {
   ticketNumber: string;
   notes: string;
   completed: boolean;
-  // PDF fields
   pdfFile?: ArrayBuffer | null;
   pdfFileName?: string | null;
   pdfFileSize?: number | null;
   createdAt?: string;
   updatedAt?: string;
+  deletedAt?: string;
   userId: string;
   user: User;
 };
 
-export type Park = 'Carowinds' | 'Six Flags Over Texas' | 'Fiesta Texas' | '';
+export type Park = "Carowinds" | "Six Flags Over Texas" | "Fiesta Texas" | "";

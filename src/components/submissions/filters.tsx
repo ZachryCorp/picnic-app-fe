@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -7,10 +7,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Filter } from "lucide-react";
+} from '../ui/dropdown-menu';
+import { Filter } from 'lucide-react';
 
-const PARKS = ["Carowinds", "Six Flags Over Texas", "Fiesta Texas"] as const;
+const PARKS = ['Carowinds', 'Six Flags Over Texas', 'Fiesta Texas'] as const;
 
 interface FiltersProps {
   selectedParks: string[];
@@ -25,6 +25,8 @@ interface FiltersProps {
   onChildrenVerificationChange: (value: boolean | null) => void;
   hasCompleted: boolean | null;
   onCompletedChange: (value: boolean | null) => void;
+  isSoftDeleted: boolean | null;
+  onSoftDeleteChange: (value: boolean | null) => void;
 }
 
 export function Filters({
@@ -40,6 +42,8 @@ export function Filters({
   onChildrenVerificationChange,
   hasCompleted,
   onCompletedChange,
+  isSoftDeleted,
+  onSoftDeleteChange,
 }: FiltersProps) {
   const handleParkToggle = (park: string) => {
     if (selectedParks.includes(park)) {
@@ -62,17 +66,17 @@ export function Filters({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
-          <Filter className="mr-2 h-4 w-4" />
+        <Button variant='outline' size='sm' className='border-dashed'>
+          <Filter className='mr-2 h-4 w-4' />
           Filters
           {totalActiveFilters > 0 && (
-            <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
+            <span className='ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground'>
               {totalActiveFilters}
             </span>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[250px]">
+      <DropdownMenuContent align='start' className='w-[250px]'>
         <DropdownMenuLabel>Parks</DropdownMenuLabel>
         <DropdownMenuGroup>
           {PARKS.map((park) => (
@@ -135,7 +139,7 @@ export function Filters({
             checked={hasPayrollDeduction === true}
             onCheckedChange={() =>
               onPayrollDeductionChange(
-                hasPayrollDeduction === true ? null : true,
+                hasPayrollDeduction === true ? null : true
               )
             }
           >
@@ -145,7 +149,7 @@ export function Filters({
             checked={hasPayrollDeduction === false}
             onCheckedChange={() =>
               onPayrollDeductionChange(
-                hasPayrollDeduction === false ? null : false,
+                hasPayrollDeduction === false ? null : false
               )
             }
           >
@@ -160,7 +164,7 @@ export function Filters({
             checked={hasChildrenVerification === false}
             onCheckedChange={() =>
               onChildrenVerificationChange(
-                hasChildrenVerification === false ? null : false,
+                hasChildrenVerification === false ? null : false
               )
             }
           >
@@ -171,7 +175,7 @@ export function Filters({
             checked={hasChildrenVerification === true}
             onCheckedChange={() =>
               onChildrenVerificationChange(
-                hasChildrenVerification === true ? null : true,
+                hasChildrenVerification === true ? null : true
               )
             }
           >
@@ -197,6 +201,27 @@ export function Filters({
             }
           >
             Not Completed
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Active</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem
+            checked={isSoftDeleted === false}
+            onCheckedChange={() =>
+              onSoftDeleteChange(isSoftDeleted === false ? null : false)
+            }
+          >
+            Active
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={isSoftDeleted === true}
+            onCheckedChange={() =>
+              onSoftDeleteChange(isSoftDeleted === true ? null : true)
+            }
+          >
+            Inactive
           </DropdownMenuCheckboxItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
