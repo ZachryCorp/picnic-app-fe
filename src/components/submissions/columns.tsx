@@ -205,7 +205,9 @@ export const columns: ColumnDef<Submission>[] = [
         column={column}
         title={
           <>
-            Total Full
+            Additional
+            <br />
+            Full
             <br />
             Tickets
           </>
@@ -215,16 +217,6 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: "additionalFullTicket",
     size: 100,
     enableResizing: true,
-    cell: ({ row }) => {
-      const guest = row.original.guest ? 2 : 1;
-      const additionalFullTicket = row.original.additionalFullTicket;
-      const children = row.original.childrenVerification
-        ? row.original.pendingDependentChildren
-        : row.original.user?.children || 0;
-
-      const totalTickets = guest + additionalFullTicket + children;
-      return totalTickets;
-    },
   },
   {
     header: ({ column }) => (
@@ -232,7 +224,9 @@ export const columns: ColumnDef<Submission>[] = [
         column={column}
         title={
           <>
-            Total Meal
+            Additional
+            <br />
+            Meal
             <br />
             Tickets
           </>
