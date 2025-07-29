@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteSubmission, updateSubmission } from "@/api/submissions";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { useFormStepper } from "@/hooks/form";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
 import {
@@ -50,8 +49,6 @@ export function SubmissionForm({
       completed: false,
     },
   });
-
-  const { user } = useFormStepper();
 
   const queryClient = useQueryClient();
   const { mutate: update } = useMutation({
@@ -140,7 +137,7 @@ export function SubmissionForm({
         />
         <div className="flex flex-col gap-2">
           <Label>Last Year's Children</Label>
-          <p>{user?.children}</p>
+          <p>{submission.user?.children}</p>
         </div>
         <FormField
           control={form.control}
