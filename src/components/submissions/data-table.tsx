@@ -218,7 +218,9 @@ export function DataTable<TData extends Submission, TValue>({
 
       // Filter rows that have PDFs
       const rowsWithPdfs = rows.filter(
-        (row) => row.original.pdfFileName || row.original.pdfFileSize,
+        (row) =>
+          (row.original.pdfFileName || row.original.pdfFileSize) &&
+          row.original.deletedAt === null,
       );
 
       if (rowsWithPdfs.length === 0) {
