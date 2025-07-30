@@ -46,6 +46,7 @@ export function SubmissionForm({
       childrenVerification: false,
       childrenVerified: false,
       notes: "",
+      additionalChildrenReason: "",
       completed: false,
     },
   });
@@ -139,6 +140,16 @@ export function SubmissionForm({
           <Label>Last Year's Children</Label>
           <p>{submission.user?.children}</p>
         </div>
+        <FormField
+          control={form.control}
+          name="additionalChildrenReason"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Additional Children Reason</FormLabel>
+              <Textarea {...field} />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="pendingDependentChildren"
