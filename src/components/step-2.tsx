@@ -30,9 +30,9 @@ export function Step2() {
     setUser,
     park,
     setChildrenVerification,
+    additionalChildren,
     setAdditionalChildren,
     setAdditionalChildrenReason,
-    additionalChildren,
   } = useFormStepper();
 
   const [showChildrenVerification, setShowChildrenVerification] =

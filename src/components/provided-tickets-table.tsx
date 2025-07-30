@@ -56,7 +56,7 @@ export function ProvidedTicketsTable({
         )}
         <TableRow>
           <TableCell>
-            {t("children")}
+            {showLastYearChildren ? t("requestedChildren") : t("children")}
             {showLastYearChildren && (
               <span className="text-xs text-destructive">
                 &nbsp; ({t("dependentChildrenVerification")})
