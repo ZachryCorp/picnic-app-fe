@@ -407,7 +407,7 @@ export const columns: ColumnDef<Submission>[] = [
               </Tooltip>
             </div>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edit Submission</DialogTitle>
             </DialogHeader>
