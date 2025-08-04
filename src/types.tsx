@@ -1,9 +1,10 @@
 export type User = {
-  id: string;
+  ein: number;
   lastName: string;
   firstName?: string;
-  ein: number;
   jobNumber?: string;
+  location?: string;
+  company?: string;
   email: string;
   children: number;
   guest: boolean;
@@ -24,13 +25,17 @@ export type Submission = {
   additionalChildrenReason: string;
   childrenVerified: boolean;
   pendingDependentChildren: number;
-  ticketsToBeDistributed: number;
   ticketNumber: string;
   notes: string;
+  completed: boolean;
+  pdfFile?: ArrayBuffer | null;
+  pdfFileName?: string | null;
+  pdfFileSize?: number | null;
   createdAt?: string;
   updatedAt?: string;
+  deletedAt?: string;
   userId: string;
   user: User;
 };
 
-export type Park = 'Carowinds' | 'Six Flags Over Texas' | 'Fiesta Texas' | '';
+export type Park = "Carowinds" | "Six Flags Over Texas" | "Fiesta Texas" | "";

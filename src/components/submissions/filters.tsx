@@ -21,11 +21,12 @@ interface FiltersProps {
   onChildrenChange: (value: boolean | null) => void;
   hasPayrollDeduction: boolean | null;
   onPayrollDeductionChange: (value: boolean | null) => void;
-  selectedJobNumbers: string[];
-  onJobNumbersChange: (jobNumbers: string[]) => void;
-  availableJobNumbers: string[];
   hasChildrenVerification: boolean | null;
   onChildrenVerificationChange: (value: boolean | null) => void;
+  hasCompleted: boolean | null;
+  onCompletedChange: (value: boolean | null) => void;
+  isSoftDeleted: boolean | null;
+  onSoftDeleteChange: (value: boolean | null) => void;
 }
 
 export function Filters({
@@ -37,25 +38,18 @@ export function Filters({
   onChildrenChange,
   hasPayrollDeduction,
   onPayrollDeductionChange,
-  selectedJobNumbers,
-  onJobNumbersChange,
-  availableJobNumbers,
   hasChildrenVerification,
   onChildrenVerificationChange,
+  hasCompleted,
+  onCompletedChange,
+  isSoftDeleted,
+  onSoftDeleteChange,
 }: FiltersProps) {
   const handleParkToggle = (park: string) => {
     if (selectedParks.includes(park)) {
       onParksChange(selectedParks.filter((p) => p !== park));
     } else {
       onParksChange([...selectedParks, park]);
-    }
-  };
-
-  const handleJobNumberToggle = (jobNumber: string) => {
-    if (selectedJobNumbers.includes(jobNumber)) {
-      onJobNumbersChange(selectedJobNumbers.filter((j) => j !== jobNumber));
-    } else {
-      onJobNumbersChange([...selectedJobNumbers, jobNumber]);
     }
   };
 
@@ -67,7 +61,7 @@ export function Filters({
     (hasChildrenVerification === true || hasChildrenVerification === false
       ? 1
       : 0) +
-    selectedJobNumbers.length;
+    (hasCompleted === true || hasCompleted === false ? 1 : 0);
 
   return (
     <DropdownMenu>
@@ -167,16 +161,6 @@ export function Filters({
         <DropdownMenuLabel>Children Verification</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuCheckboxItem
-            checked={hasChildrenVerification === true}
-            onCheckedChange={() =>
-              onChildrenVerificationChange(
-                hasChildrenVerification === true ? null : true
-              )
-            }
-          >
-            Verified
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
             checked={hasChildrenVerification === false}
             onCheckedChange={() =>
               onChildrenVerificationChange(
@@ -184,27 +168,62 @@ export function Filters({
               )
             }
           >
+            Verified
+          </DropdownMenuCheckboxItem>
+
+          <DropdownMenuCheckboxItem
+            checked={hasChildrenVerification === true}
+            onCheckedChange={() =>
+              onChildrenVerificationChange(
+                hasChildrenVerification === true ? null : true
+              )
+            }
+          >
             Not Verified
           </DropdownMenuCheckboxItem>
         </DropdownMenuGroup>
 
-        {availableJobNumbers.length > 0 && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Job Numbers</DropdownMenuLabel>
-            <DropdownMenuGroup>
-              {availableJobNumbers.map((jobNumber) => (
-                <DropdownMenuCheckboxItem
-                  key={jobNumber}
-                  checked={selectedJobNumbers.includes(jobNumber)}
-                  onCheckedChange={() => handleJobNumberToggle(jobNumber)}
-                >
-                  {jobNumber}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuGroup>
-          </>
-        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Completed</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem
+            checked={hasCompleted === true}
+            onCheckedChange={() =>
+              onCompletedChange(hasCompleted === true ? null : true)
+            }
+          >
+            Completed
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={hasCompleted === false}
+            onCheckedChange={() =>
+              onCompletedChange(hasCompleted === false ? null : false)
+            }
+          >
+            Not Completed
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Active</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem
+            checked={isSoftDeleted === false}
+            onCheckedChange={() =>
+              onSoftDeleteChange(isSoftDeleted === false ? null : false)
+            }
+          >
+            Active
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={isSoftDeleted === true}
+            onCheckedChange={() =>
+              onSoftDeleteChange(isSoftDeleted === true ? null : true)
+            }
+          >
+            Inactive
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
