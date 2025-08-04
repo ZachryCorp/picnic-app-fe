@@ -32,9 +32,6 @@ export function SignIn({ className, ...props }: React.ComponentProps<"div">) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      {/* TODO: remove for production */}
-      <p>email: test@zachrycorp.com</p>
-      <p>password: test123!</p>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
