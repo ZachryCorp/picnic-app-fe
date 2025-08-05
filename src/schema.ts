@@ -37,7 +37,7 @@ export const step2Schema = z.object({
   employeeTickets: z.number().min(0),
   guestTickets: z.number().max(1).min(0),
   childrenTickets: z.number().min(0),
-  additionalChildrenReason: z.string(),
+  additionalChildrenReason: z.string().optional(),
 });
 
 export const step3Schema = z.object({

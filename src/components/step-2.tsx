@@ -9,7 +9,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useFormStepper } from "@/hooks/form";
 import { useTranslation } from "react-i18next";
@@ -62,14 +62,35 @@ export function Step2() {
   // watch for changes to childrenTickets
   const childrenTickets = form.watch("childrenTickets");
 
+  // Clear additional children reason error when textarea is hidden
+  useEffect(() => {
+    if (!showAdditionalChildrenTextArea) {
+      form.clearErrors("additionalChildrenReason");
+    }
+  }, [showAdditionalChildrenTextArea, form]);
+
   const handleSubmit = () => {
+    // Custom validation for additional children reason
+    if (
+      showAdditionalChildrenTextArea &&
+      !form.getValues("additionalChildrenReason")?.trim()
+    ) {
+      form.setError("additionalChildrenReason", {
+        type: "required",
+        message: "Additional children reason is required",
+      });
+      return;
+    }
+
     setUser({
       ...user,
       guest: form.getValues("guestTickets") ? true : false,
     });
     setAdditionalChildren(form.getValues("childrenTickets"));
     setIncludePayrollDeduction(false);
-    setAdditionalChildrenReason(form.getValues("additionalChildrenReason"));
+    setAdditionalChildrenReason(
+      form.getValues("additionalChildrenReason") || "",
+    );
     setChildrenVerification(
       initialChildrenVerificationRequired && childrenTickets > user?.children,
     );
@@ -77,13 +98,27 @@ export function Step2() {
   };
 
   const handlePurchaseTickets = () => {
+    // Custom validation for additional children reason
+    if (
+      showAdditionalChildrenTextArea &&
+      !form.getValues("additionalChildrenReason")?.trim()
+    ) {
+      form.setError("additionalChildrenReason", {
+        type: "required",
+        message: "Additional children reason is required",
+      });
+      return;
+    }
+
     setUser({
       ...user,
       guest: form.getValues("guestTickets") ? true : false,
     });
     setAdditionalChildren(form.getValues("childrenTickets"));
     setIncludePayrollDeduction(true);
-    setAdditionalChildrenReason(form.getValues("additionalChildrenReason"));
+    setAdditionalChildrenReason(
+      form.getValues("additionalChildrenReason") || "",
+    );
     setChildrenVerification(
       initialChildrenVerificationRequired && childrenTickets > user?.children,
     );
@@ -310,13 +345,16 @@ export function Step2() {
                     render={({ field }) => (
                       <FormItem className="mt-4">
                         <FormLabel>Additional Children Reason</FormLabel>
-                        <Textarea
-                          {...field}
-                          placeholder="Reason for additional children"
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                          }}
-                        />
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="Reason for additional children"
+                            onChange={(e) => {
+                              field.onChange(e.target.value);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
