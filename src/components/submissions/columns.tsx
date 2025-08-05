@@ -150,12 +150,6 @@ export const columns: ColumnDef<Submission>[] = [
     ),
     accessorKey: "pendingDependentChildren",
     size: 100,
-    cell: ({ row }) => {
-      const user = row.original.user;
-      return row.original.childrenVerification
-        ? row.original.pendingDependentChildren
-        : user?.children || 0;
-    },
     filterFn: (row, _, value: boolean | null) => {
       if (value === null) return true;
       const hasChildren = row.original.childrenVerification
@@ -244,7 +238,7 @@ export const columns: ColumnDef<Submission>[] = [
       const guest = row.original.guest ? 2 : 1;
       const additionalFullTicket = row.original.additionalFullTicket;
       const additionalMealTicket = row.original.additionalMealTicket;
-      const children = row.original.childrenVerification
+      const children = !row.original.childrenVerification
         ? row.original.pendingDependentChildren
         : row.original.user?.children || 0;
 
@@ -260,7 +254,7 @@ export const columns: ColumnDef<Submission>[] = [
         const guest = row.original.guest ? 2 : 1;
         const additionalFullTicket = row.original.additionalFullTicket;
         const additionalMealTicket = row.original.additionalMealTicket;
-        const children = row.original.childrenVerification
+        const children = !row.original.childrenVerification
           ? row.original.pendingDependentChildren
           : row.original.user?.children || 0;
 
