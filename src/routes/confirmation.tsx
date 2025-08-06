@@ -77,12 +77,12 @@ function RouteComponent() {
             </p>
             <p className='text-sm'>Hotel offering your special group rate:</p>
             <p className='text-sm'>
-              TownPlace Suites Fort Mill at Carowinds Blvd. for 119.00 USD per
+              Hilton Garden Inn Charlotte/Ayrsley for 134.00 USD per
               night - Last Day to Book: Friday, September 12, 2025
             </p>
             <div className='flex items-center gap-2 text-blue-600 visited:text-purple-800'>
               <a
-                href='https://www.marriott.com/event-reservations/reservation-link.mi?id=1752866477439&key=GRP&app=resvlink'
+                href='https://group.hiltongardeninn.com/xxp6qd'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='underline cursor-pointer'
