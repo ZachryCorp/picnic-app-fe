@@ -128,7 +128,6 @@ export function DataTable<TData extends Submission, TValue>({
       },
       columnVisibility: {
         childrenVerification: false,
-        createdAt: false,
         deletedAt: false,
       },
     },

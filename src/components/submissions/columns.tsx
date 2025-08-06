@@ -343,7 +343,18 @@ export const columns: ColumnDef<Submission>[] = [
     ),
     accessorKey: "createdAt",
     cell: ({ row }) => {
-      return row.original.createdAt;
+      if (!row.original.createdAt) return null;
+
+      const date = new Date(row.original.createdAt);
+      const year = date.getUTCFullYear();
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
+      const day = date.getUTCDate().toString().padStart(2, "0");
+      const hours = date.getUTCHours().toString().padStart(2, "0");
+      const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+      const seconds = date.getUTCSeconds().toString().padStart(2, "0");
+
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return formattedDate;
     },
   },
   {
