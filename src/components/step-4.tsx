@@ -352,37 +352,37 @@ export function Step4() {
 
     create(submissionData);
 
+    // Prepare order data for email template
+    const orderData = {
+      firstName: user.firstName || "",
+      lastName: user.lastName,
+      ein: user.ein,
+      location: user.location,
+      additionalChildrenReason,
+      park,
+      employeeTickets: 1,
+      guestTickets: totalGuestTickets,
+      childrenTickets: additionalChildren,
+      additionalFullTickets: fullTicketCount,
+      additionalMealTickets: mealTicketCount,
+      totalTickets:
+        1 +
+        totalGuestTickets +
+        totalChildrenTickets +
+        fullTicketCount +
+        mealTicketCount,
+      payrollDeductionAmount,
+      deductionPeriods,
+      hasPayrollDeduction: !!payrollDeductionAmount,
+      childrenVerification,
+      lastYearChildrenTickets: user?.children,
+    };
+
+    if (childrenVerification) {
+      sendDependentChildrenVerificationEmail(orderData);
+    }
+
     if (data.email && data.email.trim() !== "") {
-      // Prepare order data for email template
-      const orderData = {
-        firstName: user.firstName || "",
-        lastName: user.lastName,
-        ein: user.ein,
-        location: user.location,
-        additionalChildrenReason,
-        park,
-        employeeTickets: 1,
-        guestTickets: totalGuestTickets,
-        childrenTickets: additionalChildren,
-        additionalFullTickets: fullTicketCount,
-        additionalMealTickets: mealTicketCount,
-        totalTickets:
-          1 +
-          totalGuestTickets +
-          totalChildrenTickets +
-          fullTicketCount +
-          mealTicketCount,
-        payrollDeductionAmount,
-        deductionPeriods,
-        hasPayrollDeduction: !!payrollDeductionAmount,
-        childrenVerification,
-        lastYearChildrenTickets: user?.children,
-      };
-
-      if (childrenVerification) {
-        sendDependentChildrenVerificationEmail(orderData);
-      }
-
       sendOrderConfirmationEmail(
         data.email,
         orderData,
