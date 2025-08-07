@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { DataTable } from './data-table';
-import { columns } from './columns';
-import { getSubmissions } from '@/api/submissions';
+import { useQuery } from "@tanstack/react-query";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
+import { getSubmissions } from "@/api/submissions";
 
 export function SubmissionTableWrapper() {
-  const { isPending, data, error } = useQuery({
-    queryKey: ['submissions'],
+  const { isPending, isFetching, data, error } = useQuery({
+    queryKey: ["submissions"],
     queryFn: getSubmissions,
   });
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending || isFetching) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!data) return <div>No data</div>;
 
