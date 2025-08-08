@@ -62,11 +62,7 @@ export function Step4() {
   const mealTicketPrice = getMealTicketPrice(park) ?? 0;
 
   const totalGuestTickets = user.guest ? 1 : 0;
-  const totalChildrenTickets = childrenVerification
-    ? additionalChildren
-    : additionalChildren === user?.children
-      ? user?.children
-      : additionalChildren;
+  const totalChildrenTickets = additionalChildren;
 
   const form = useForm<Step4Values>({
     resolver: zodResolver(step4Schema),

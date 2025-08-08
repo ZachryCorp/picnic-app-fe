@@ -39,14 +39,9 @@ export function Step3() {
     park,
     user,
     additionalChildren,
-    childrenVerification,
   } = useFormStepper();
 
-  const childrenTickets = childrenVerification
-    ? additionalChildren
-    : additionalChildren === user?.children
-      ? user?.children
-      : additionalChildren;
+  const childrenTickets = additionalChildren;
 
   const ticketPrice = getTicketPrice(park) ?? 0;
   const mealTicketPrice = getMealTicketPrice(park) ?? 0;
