@@ -211,6 +211,14 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: "additionalFullTicket",
     size: 100,
     enableResizing: true,
+    footer: ({ table }) => {
+      const rows = table.getFilteredRowModel().rows;
+
+      const total = rows.reduce((acc, row) => {
+        return acc + row.original.additionalFullTicket;
+      }, 0);
+      return total;
+    },
   },
   {
     header: ({ column }) => (
@@ -230,6 +238,14 @@ export const columns: ColumnDef<Submission>[] = [
     accessorKey: "additionalMealTicket",
     size: 100,
     enableResizing: true,
+    footer: ({ table }) => {
+      const rows = table.getFilteredRowModel().rows;
+
+      const total = rows.reduce((acc, row) => {
+        return acc + row.original.additionalMealTicket;
+      }, 0);
+      return total;
+    },
   },
   {
     header: "Total Tickets",
