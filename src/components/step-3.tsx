@@ -39,7 +39,14 @@ export function Step3() {
     park,
     user,
     additionalChildren,
+    childrenVerification,
   } = useFormStepper();
+
+  const childrenTickets = childrenVerification
+    ? additionalChildren
+    : additionalChildren === user?.children
+      ? user?.children
+      : additionalChildren;
 
   const ticketPrice = getTicketPrice(park) ?? 0;
   const mealTicketPrice = getMealTicketPrice(park) ?? 0;
@@ -85,7 +92,7 @@ export function Step3() {
     <div className="flex flex-col gap-8">
       <ProvidedTicketsTable
         guestTickets={totalGuestTickets}
-        childrenTickets={additionalChildren}
+        childrenTickets={childrenTickets}
         lastYearChildrenTickets={user?.children ? user.children : 0}
       />
       <Form {...form}>

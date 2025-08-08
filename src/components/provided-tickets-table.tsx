@@ -22,7 +22,7 @@ export function ProvidedTicketsTable({
   const { t } = useTranslation();
 
   const showLastYearChildren =
-    lastYearChildrenTickets !== childrenTickets && childrenTickets > 0;
+    lastYearChildrenTickets < childrenTickets && childrenTickets > 0;
 
   return (
     <Table className="border text-[9px] sm:text-base">

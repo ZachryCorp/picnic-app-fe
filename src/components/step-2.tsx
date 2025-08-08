@@ -72,8 +72,8 @@ export function Step2() {
   const handleSubmit = () => {
     // Custom validation for additional children reason
     if (
-        showAdditionalChildrenTextArea &&
-        childrenTickets > user?.children &&
+      showAdditionalChildrenTextArea &&
+      childrenTickets > user?.children &&
       !form.getValues("additionalChildrenReason")?.trim()
     ) {
       form.setError("additionalChildrenReason", {
@@ -102,6 +102,7 @@ export function Step2() {
     // Custom validation for additional children reason
     if (
       showAdditionalChildrenTextArea &&
+      childrenTickets > user?.children &&
       !form.getValues("additionalChildrenReason")?.trim()
     ) {
       form.setError("additionalChildrenReason", {

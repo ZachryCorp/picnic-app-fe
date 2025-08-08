@@ -64,7 +64,9 @@ export function Step4() {
   const totalGuestTickets = user.guest ? 1 : 0;
   const totalChildrenTickets = childrenVerification
     ? additionalChildren
-    : user?.children;
+    : additionalChildren === user?.children
+      ? user?.children
+      : additionalChildren;
 
   const form = useForm<Step4Values>({
     resolver: zodResolver(step4Schema),
