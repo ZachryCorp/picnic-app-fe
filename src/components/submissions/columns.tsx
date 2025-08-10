@@ -254,9 +254,7 @@ export const columns: ColumnDef<Submission>[] = [
       const guest = row.original.guest ? 2 : 1;
       const additionalFullTicket = row.original.additionalFullTicket;
       const additionalMealTicket = row.original.additionalMealTicket;
-      const children = !row.original.childrenVerification
-        ? row.original.pendingDependentChildren
-        : row.original.user?.children || 0;
+      const children = row.original.pendingDependentChildren;
 
       const totalTickets =
         guest + additionalFullTicket + additionalMealTicket + children;
@@ -270,9 +268,7 @@ export const columns: ColumnDef<Submission>[] = [
         const guest = row.original.guest ? 2 : 1;
         const additionalFullTicket = row.original.additionalFullTicket;
         const additionalMealTicket = row.original.additionalMealTicket;
-        const children = !row.original.childrenVerification
-          ? row.original.pendingDependentChildren
-          : row.original.user?.children || 0;
+        const children = row.original.pendingDependentChildren;
 
         return (
           acc + guest + additionalFullTicket + additionalMealTicket + children
