@@ -31,6 +31,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { X } from 'lucide-react';
 import { Filters } from './filters';
+import { useSession } from '@/lib/auth-client';
 
 interface DataTableProps<TData extends Submission, TValue> {
   data: TData[];
@@ -105,6 +106,9 @@ export function DataTable<TData extends Submission, TValue>({
   data,
   columns,
 }: DataTableProps<TData, TValue>) {
+  const { data: session } = useSession();
+  const isDonna = session?.user.name.toLowerCase().includes('donna dimond');
+
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'completed', desc: false },
     { id: 'createdAt', desc: true },
@@ -129,6 +133,7 @@ export function DataTable<TData extends Submission, TValue>({
       columnVisibility: {
         childrenVerification: false,
         deletedAt: false,
+        edit: !isDonna,
       },
     },
     onSortingChange: setSorting,
