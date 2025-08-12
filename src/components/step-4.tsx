@@ -338,6 +338,7 @@ export function Step4() {
       additionalFullTicket: fullTicketCount,
       additionalMealTicket: mealTicketCount,
       childrenVerification,
+      childrenRequestApproved: childrenVerification ? false : null,
       pendingDependentChildren: additionalChildren,
       additionalChildrenReason,
       payrollDeduction: !!payrollDeductionAmount,

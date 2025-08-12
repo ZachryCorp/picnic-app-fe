@@ -45,6 +45,7 @@ export function SubmissionForm({
       deductionPeriods: 0,
       childrenVerification: false,
       childrenVerified: false,
+      childrenRequestApproved: false,
       notes: "",
       additionalChildrenReason: "",
       completed: false,
@@ -192,13 +193,13 @@ export function SubmissionForm({
         />
         <FormField
           control={form.control}
-          name="childrenVerification"
+          name="childrenRequestApproved"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Approve Dependent Children Request</FormLabel>
               <Select
-                value={field.value ? "no" : "yes"}
-                onValueChange={(value) => field.onChange(value === "no")}
+                value={field.value ? "yes" : "no"}
+                onValueChange={(value) => field.onChange(value === "yes")}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select verification status" />
